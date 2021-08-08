@@ -30,3 +30,17 @@
 *.exe
 *.out
 *.app
+
+# Build
+/build
+
+#vscode
+.vscode
+*-workspace
+
+
+# CMake Build commandas
+compile_commands.json
+
+# Caches
+.cache

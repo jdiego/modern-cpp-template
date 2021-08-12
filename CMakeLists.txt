@@ -107,6 +107,7 @@ endif()
 include(CMakePackageConfigHelpers)
 include(InstallRequiredSystemLibraries)
 include(GenerateExportHeader)
+include(CMakeParseArguments)
 
 # Setup C/C++ compiler options
 # Compiler settings - special settings for known compilers

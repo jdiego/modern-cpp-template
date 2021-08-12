@@ -33,6 +33,10 @@ help:
 clean:
 	rm -rf build
 
+# update CPM.cmake
+update:
+	wget -q -O cmake/CPM.cmake https://github.com/cpm-cmake/CPM.cmake/releases/latest/download/get_cpm.cmake
+
 test: ## run tests quickly with ctest
 	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -DENABLE_UNIT_TESTING=1 -DCMAKE_BUILD_TYPE="Release"
 	cd build/ && ctest -C Release -VV

@@ -12,7 +12,6 @@ verbose_message("Adding tests under ${TestLib}...")
 
 
 # ---- Dependencies ----
-include(../cmake/CPM.cmake)
 
 CPMAddPackage("gh:onqtam/doctest#2.4.5")
 CPMAddPackage("gh:TheLartians/Format.cmake@1.7.0")

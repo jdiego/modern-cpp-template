@@ -116,9 +116,10 @@ include(CMakePackageConfigHelpers)
 include(CheckTypeSize)
 include(CMakePrintHelpers)
 include(CompilerWarnings)
-
-include(CPM)
 include(Utils)
+
+option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
+include(CPM)
 
 #################################################################################
 # The location where the project's version header will be placed should match 
@@ -141,6 +142,8 @@ find_package(Threads REQUIRED)
 #################################################################################
 # Source tree
 #################################################################################
+CPMAddPackage("gh:fmtlib/fmt#8.0.1")
+CPMAddPackage("gh:gabime/spdlog@1.9.2")
 add_subdirectory(extern)
 add_subdirectory(src)
 

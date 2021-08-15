@@ -72,10 +72,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
     set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     
-    # Configure the visibility of symbols in targets
-    #set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-    #set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
-
+    
     # Testing only available if this is the main app
     # Note this needs to be done in the main CMakeLists
     # since it calls enable_testing, which must be in the
@@ -91,31 +88,27 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     endif()
 
     ################################################################################
-    # Define Options
+    # Define CMake Module Imports
     ################################################################################
-    option(BUILD_TESTING "Build tests" FALSE)
-    option(BUILD_SHARED_LIBS "Build shared libraries" TRUE)
-    option(BUILD_WITH_MT "Build libraries as MultiThreaded DLL (Windows Only)" FALSE)
-    option(${PROJECT_NAME}_VERBOSE_OUTPUT TRUE)
+    include(CMakePackageConfigHelpers)
+    include(InstallRequiredSystemLibraries)
+    include(GenerateExportHeader)
+    include(CMakeParseArguments)
 
+    # Setup C/C++ compiler options
+    # Compiler settings - special settings for known compilers
+    include(CheckCXXCompilerFlag)
+    include(CMakePackageConfigHelpers)
+    include(CheckTypeSize)
+    include(CMakePrintHelpers)
+    include(CompilerWarnings)
+    
 endif()
 
-
 ################################################################################
-# Define CMake Module Imports
+# Define Options
 ################################################################################
-include(CMakePackageConfigHelpers)
-include(InstallRequiredSystemLibraries)
-include(GenerateExportHeader)
-include(CMakeParseArguments)
-
-# Setup C/C++ compiler options
-# Compiler settings - special settings for known compilers
-include(CheckCXXCompilerFlag)
-include(CMakePackageConfigHelpers)
-include(CheckTypeSize)
-include(CMakePrintHelpers)
-include(CompilerWarnings)
+include(Options)
 include(Utils)
 
 option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
@@ -147,9 +140,6 @@ CPMAddPackage("gh:gabime/spdlog@1.9.2")
 add_subdirectory(extern)
 add_subdirectory(src)
 
-#################################################################################
-# PACKING
-#################################################################################
 
 
 #################################################################################
@@ -160,7 +150,13 @@ if(${BUILD_TESTING})
     add_subdirectory(test)
 endif()
 
+#################################################################################
+# PACKING
+#################################################################################
 
+#################################################################################
+# INFO
+#################################################################################
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
     message(STATUS "CMake ${CMAKE_VERSION} successfully configured ${PROJECT_NAME} using ${CMAKE_GENERATOR} generator")

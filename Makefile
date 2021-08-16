@@ -25,7 +25,8 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
-INSTALL_LOCATION := /tmp/local
+PROJECT_NAME := "modern-cpp-project"
+INSTALL_LOCATION := /tmp/$(PROJECT_NAME)
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
@@ -68,3 +69,7 @@ format: ## view changes the project sources
 fix-format: ## format the project sources
 	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION)
 	cmake --build build --target fix-format
+
+uninstall: ## uninstall the package to the `INSTALL_LOCATION`
+	cmake --build build --target uninstall
+

@@ -1,5 +1,4 @@
-# MIT License 
-# Copyright (c) 2018-Today Michele Adduci <adduci@tutanota.com>
+# MIT License Copyright (c) 2018-Today Michele Adduci <adduci@tutanota.com>
 #
 # Clang-Format instructions
 

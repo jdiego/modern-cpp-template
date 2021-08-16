@@ -1,13 +1,12 @@
-#include <fmt/format.h>
 #include "modern_cpp_project/greeter.hpp"
+#include <fmt/format.h>
 using namespace greeter;
 
-Greeter::Greeter(std::string _name) : name(std::move(_name)) {}
+Greeter::Greeter(std::string _name) : name(std::move(_name)) {
+}
 
-std::string Greeter::greet(LanguageCode lang) const
-{
-    switch (lang)
-    {
+std::string Greeter::greet(LanguageCode lang) const {
+    switch (lang) {
     default:
     case LanguageCode::EN:
         return fmt::format("Hello, {}!", name);

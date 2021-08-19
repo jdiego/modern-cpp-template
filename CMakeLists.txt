@@ -167,8 +167,10 @@ packageProject(
     # a temporary directory to create the config files
     BINARY_DIR ${PROJECT_BINARY_DIR}
     # location of the target's public headers
+    # A.K.A Install the `include` directory
     INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
-    # should match the target's INSTALL_INTERFACE include directory
+    # Install the `include` directory.
+    # NOTE: should match the target's INSTALL_INTERFACE include directory
     INCLUDE_DESTINATION include
     # (optional) create a header containing the version info
     # Note: that the path to headers should be lowercase
@@ -181,7 +183,7 @@ packageProject(
     # supported values: `AnyNewerVersion|SameMajorVersion|SameMinorVersion|ExactVersion`
     COMPATIBILITY SameMajorVersion
     # semicolon separated list of the project's dependencies
-    DEPENDENCIES ${PROJECT_NAME}_DEPENDENCIES
+    DEPENDENCIES "${${PROJECT_NAME}_DEPENDENCIES}"
     # (optional) option to disable the versioning of install destinations
     DISABLE_VERSION_SUFFIX YES
     # (optional) option to ignore target architecture for package resolution

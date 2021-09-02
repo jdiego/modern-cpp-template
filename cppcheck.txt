@@ -1,0 +1,1 @@
+[src/greeter.cpp:8]:(style),[unusedFunction],The function 'greet' is never used.

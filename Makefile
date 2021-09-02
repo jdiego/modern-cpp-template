@@ -73,3 +73,13 @@ fix-format: ## format the project sources
 uninstall: ## uninstall the package to the `INSTALL_LOCATION`
 	cmake --build build --target uninstall
 
+check:
+	cppcheck --std=c++20 \
+		--suppress=noExplicitConstructor \
+		--inline-suppr --enable=all \
+		--suppress=missingIncludeSystem \
+		--template='[{file}:{line}]:({severity}),[{id}],{message}' \
+		--force -q \
+		-I ./include ./src 2>&1 | tee cppcheck.txt
+	python ./ci/colorize_cppcheck_results.py
+

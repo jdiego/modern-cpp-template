@@ -16,9 +16,12 @@ option(${PROJECT_NAME}_ENABLE_CCACHE "Enable the usage of Ccache, in order to sp
 option(${PROJECT_NAME}_VERBOSE_OUTPUT "Enable verbose output, allowing for a better understanding of each step taken." ON)
 option(${PROJECT_NAME}_GENERATE_EXPORT_HEADER "Create a `project_export.h` file containing all exported symbols." OFF)
 option(${PROJECT_NAME}_THREAD_PREFER_PTHREAD "prefer pthread library on system with multiple thread libraries available")
-option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
 set(${PROJECT_NAME}_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include" CACHE STRING "Location of the target's public headers")
 set(${PROJECT_NAME}_INCLUDE_DESTINATION  "include" CACHE STRING "Install interface location")
+option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
+###############################################################################
+#          C O M P I L E R    A N D    S Y S T E M    O P T I O N S           #
+###############################################################################
 
 
 # ---------------------------------------------------------------------------

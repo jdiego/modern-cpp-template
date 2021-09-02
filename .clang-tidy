@@ -1,6 +1,35 @@
 ---
-Checks: '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm-*,-llvmlibc-*'
-CheckOptions: [{ key: misc-non-private-member-variables-in-classes, value: IgnoreClassesWithAllMemberVariablesBeingPublic }]
+
+# Aliases
+# - cppcoreguidelines-avoid-c-arrays => modernize-avoid-c-arrays
+# - cppcoreguidelines-non-private-member-variables-in-classes => misc-non-private-member-variables-in-classes
+# - cppcoreguidelines-explicit-virtual-functions, hicpp-use-override => modernize-use-override
+# - bugprone-narrowing-conversions => cppcoreguidelines-narrowing-conversions
+
+
+Checks: |
+  *,
+  -fuchsia-*,
+  -google-*,
+  -zircon-*,
+  -abseil-*,
+  -modernize-use-trailing-return-type,
+  -llvm-*,
+  -llvmlibc-*
+
 WarningsAsErrors: '*'
 HeaderFilterRegex: ''
 FormatStyle: none
+CheckOptions:
+  - key:             misc-non-private-member-variables-in-classes 
+    value:           IgnoreClassesWithAllMemberVariablesBeingPublic
+  - key:             modernize-use-override.AllowOverrideAndFinal
+    value:           'true'
+  - key:             modernize-use-override.IgnoreDestructors
+    value:           'true'
+  - key:             performance-for-range-copy.WarnOnAllAutoCopies
+    value:           'true'
+  - key:             cppcoreguidelines-narrowing-conversions.WarnOnEquivalentBitWidth
+    value:           'false'
+  - key:             readability-implicit-bool-conversion.AllowPointerConditions
+    value:           'true'

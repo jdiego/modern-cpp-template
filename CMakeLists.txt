@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.17.0 FATAL_ERROR)
 
 # Make sure that custom modules are found
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -23,6 +23,7 @@ set(CMAKE_PROJECT_VERSION ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION
 # Define Options
 # ######################################################################################################################
 include(StandardSettings)
+include(StaticAnalyzers)
 include(Utils)
 
 message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
@@ -42,6 +43,9 @@ endif()
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    ##############################################################################
+    #                         C M A K E    C O N T R O L                          #
+    ###############################################################################
     # Put the libraries and binaries that get built into directories at the top of the build tree rather than in
     # hard-to-find leaf directories. This simplifies manual testing and the use of the build tree rather than installed
     # Boost libraries.

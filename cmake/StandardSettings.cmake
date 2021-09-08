@@ -49,6 +49,10 @@ if(${PROJECT_NAME}_BUILD_SHARED_LIBS)
     #set(CMAKE_CXX_VISIBILITY_PRESET hidden) 
     #set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 endif()
+
+if (${APPLE})
+    set(CMAKE_MACOSX_RPATH 1)
+endif()
 # ---------------------------------------------------------------------------
 # Unit testing
 # ---------------------------------------------------------------------------

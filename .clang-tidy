@@ -15,7 +15,8 @@ Checks: |
   -abseil-*,
   -modernize-use-trailing-return-type,
   -llvm-*,
-  -llvmlibc-*
+  -llvmlibc-*,
+  -llvmlibc-restrict-system-libc-headers
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: ''

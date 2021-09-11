@@ -76,12 +76,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(CMAKE_DEBUG_POSTFIX d)
     # Always use '-fPIC'/'-fPIE' option.
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
     #
-    set(CMAKE_CONFIGURATION_TYPES
-        "Debug"
-        CACHE STRING "" FORCE
-    )
+    set(CMAKE_CONFIGURATION_TYPES "Debug" CACHE STRING "" FORCE)
 
     # Set the Relative Path Configurations
     set(CMAKE_SKIP_BUILD_RPATH FALSE)
@@ -115,6 +111,17 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CMakePrintHelpers)
     include(CompilerWarnings)
     # include(StaticAnalyzers.cmake)
+    
+    ########### Add uninstall target ###############
+    CONFIGURE_FILE(
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake"
+        IMMEDIATE @ONLY)
+
+    ADD_CUSTOM_TARGET(uninstall
+        "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake"
+    )
+
 endif()
 
 # ######################################################################################################################
@@ -194,16 +201,6 @@ packageProject(
     # defaults to YES for header only (i.e. INTERFACE) libraries
     ARCH_INDEPENDENT YES
 )
-
-########### Add uninstall target ###############
-CONFIGURE_FILE(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake"
-  IMMEDIATE @ONLY)
-ADD_CUSTOM_TARGET(uninstall
-  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake")
-
-
 
 # ######################################################################################################################
 # INFO

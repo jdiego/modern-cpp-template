@@ -24,9 +24,15 @@ for line in sys.stdin:
 endef
 export PRINT_HELP_PYSCRIPT
 
+override t := $(shell X="${t}"; echo $${X^^})
+
+
+PROJECT_NAME := "modern_cpp_project"
+
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
-PROJECT_NAME := "modern-cpp-project"
-INSTALL_LOCATION := /tmp/$(PROJECT_NAME)
+
+INSTALL_LOCATION = "/tmp/$(PROJECT_NAME)"
+PROJECT_NAME_UPPERCASE = $(shell echo $(PROJECT_NAME) | tr  '[:lower:]' '[:upper:]')
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
@@ -39,8 +45,10 @@ update:
 	wget -q -O cmake/CPM.cmake https://github.com/cpm-cmake/CPM.cmake/releases/latest/download/get_cpm.cmake
 
 test: ## run tests quickly with ctest
-	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -DENABLE_UNIT_TESTING=1 -DCMAKE_BUILD_TYPE="Release"
-	cd build/ && ctest -C Release -VV
+	rm -rf build/ 
+	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -D${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING=1 -DCMAKE_BUILD_TYPE="Release"
+	cmake --build build --config Release
+	cd build/ && ctest -C Release
 
 coverage: ## check code coverage quickly GCC
 	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -DENABLE_CODE_COVERAGE=1

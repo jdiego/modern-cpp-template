@@ -19,15 +19,7 @@ project(
 #
 set(CMAKE_PROJECT_VERSION ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}.${CMAKE_PROJECT_VERSION_PATCH})
 
-# ######################################################################################################################
-# Define Options
-# ######################################################################################################################
-include(StandardSettings)
-include(StaticAnalyzers)
-include(Utils)
-
-message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
-# Set Project version (used for library versioning and for CPack)
+option(${PROJECT_NAME}_USE_ALT_NAMES "Use alternative names for the project, such as naming the include directory all lowercase." ON)
 
 if(${PROJECT_NAME}_USE_ALT_NAMES)
     string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)
@@ -36,6 +28,18 @@ else()
     set(PROJECT_NAME_LOWERCASE ${PROJECT_NAME})
     set(PROJECT_NAME_UPPERCASE ${PROJECT_NAME})
 endif()
+
+
+
+# ######################################################################################################################
+# Define Options
+# ######################################################################################################################
+include(Utils)
+include(StandardSettings)
+include(StaticAnalyzers)
+
+message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
+# Set Project version (used for library versioning and for CPack)
 
 # ######################################################################################################################
 # Project Settings
@@ -87,15 +91,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # Testing only available if this is the main app Note this needs to be done in the main CMakeLists since it calls
     # enable_testing, which must be in the main CMakeLists.
     include(CTest)
-    # Docs only available if this is the main app and enabled
-    if(${PROJECT_NAME}_ENABLE_DOXYGEN OR ENABLE_DOXYGEN)
-        find_package(Doxygen)
-        if(Doxygen_FOUND)
-            add_subdirectory(docs)
-        else()
-            message(STATUS "Doxygen not found, not building docs")
-        endif()
-    endif()
     # ##################################################################################################################
     # Define CMake Module Imports
     # ##################################################################################################################
@@ -160,7 +155,7 @@ add_subdirectory(src)
 # ######################################################################################################################
 # Unit testing setup
 # ######################################################################################################################
-if(${PROJECT_NAME}_ENABLE_TESTING OR ENABLE_TESTING)
+if(${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING OR ENABLE_TESTING)
     message(STATUS "Build unit tests for the project. Tests should always be found in the test folder\n")
     add_subdirectory(test)
 endif()

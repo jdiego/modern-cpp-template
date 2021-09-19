@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 set(ProjectModule ${CMAKE_PROJECT_NAME})
-set(TestLib ${CMAKE_PROJECT_NAME}TestSuite)
+set(TestLib ${CMAKE_PROJECT_NAME}-testrunner)
 #
 project(${TestLib} LANGUAGES CXX)
 

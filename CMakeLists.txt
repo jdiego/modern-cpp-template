@@ -140,10 +140,20 @@ CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.6.0")
 # A semicolon separated list of the project's dependencies
 set(${PROJECT_NAME}_DEPENDENCIES "")
 
-CPMAddPackage("gh:fmtlib/fmt#8.0.1")
+CPMAddPackage(
+  NAME fmt
+  GIT_TAG 8.0.1
+  GITHUB_REPOSITORY fmtlib/fmt
+  OPTIONS "FMT_INSTALL YES" # create an installable target
+)
 list(APPEND ${PROJECT_NAME}_DEPENDENCIES "fmt 8.0.1")
 
-CPMAddPackage("gh:gabime/spdlog@1.9.2")
+CPMAddPackage(
+    NAME spdlog
+    VERSION 1.9.2
+    GITHUB_REPOSITORY gabime/spdlog
+    OPTIONS "SPDLOG_INSTALL YES" # create an installable target
+)
 list(APPEND ${PROJECT_NAME}_DEPENDENCIES "spdlog 1.9.2")
 
 # ######################################################################################################################

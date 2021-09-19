@@ -49,9 +49,9 @@ set_project_warnings(${LIBNAME})
 verbose_message("Applied compiler warnings. Using standard ${CMAKE_CXX_STANDARD}.\n")
 
 # Link dependencies
-
+find_package(Threads)
 # Identify and link with the specific "packages" the project uses
-target_link_libraries(${LIBNAME} PRIVATE Threads::Threads fmt::fmt)
+target_link_libraries(${LIBNAME} PRIVATE Threads::Threads fmt::fmt spdlog::spdlog)
 
 # Set the build/user include directories Allow usage of header files in the
 # `src` directory, but only for utilities

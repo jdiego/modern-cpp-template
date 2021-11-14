@@ -48,7 +48,7 @@ test: ## run tests quickly with ctest
 	rm -rf build/ 
 	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -D${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING=1 -DCMAKE_BUILD_TYPE="Release"
 	cmake --build build --config Release
-	cd build/ && ctest -C Release
+	cd build/ && ctest -C Release -VV
 
 coverage: ## check code coverage quickly GCC
 	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -DENABLE_CODE_COVERAGE=1

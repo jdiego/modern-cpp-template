@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.21.0 FATAL_ERROR)
 
 # Make sure that custom modules are found
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -15,10 +15,15 @@ project(
     LANGUAGES CXX
     DESCRIPTION "moderncpp-project is a starter project for Modern C++"
 )
-
+# ######################################################################################################################
+# Include guards: Prevent building in the source directory
+# ######################################################################################################################
+if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+  message(FATAL_ERROR "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there.\n")
+endif()
 #
-set(CMAKE_PROJECT_VERSION ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}.${CMAKE_PROJECT_VERSION_PATCH})
 
+set(CMAKE_PROJECT_VERSION ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}.${CMAKE_PROJECT_VERSION_PATCH})
 option(${PROJECT_NAME}_USE_ALT_NAMES "Use alternative names for the project, such as naming the include directory all lowercase." ON)
 
 if(${PROJECT_NAME}_USE_ALT_NAMES)
@@ -29,6 +34,12 @@ else()
     set(PROJECT_NAME_UPPERCASE ${PROJECT_NAME})
 endif()
 
+# ######################################################################################################################
+# The location where the project's version header will be placed should match the project's regular header paths. This
+# allows users to install and find the library via `find_package()`.
+# ######################################################################################################################
+set(VERSION_HEADER_LOCATION "${PROJECT_NAME_LOWERCASE}/version.hpp")
+configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/version.hpp.in ${VERSION_HEADER_LOCATION} @ONLY)
 
 
 # ######################################################################################################################
@@ -37,9 +48,12 @@ endif()
 include(Utils)
 include(StandardSettings)
 include(StaticAnalyzers)
-
+if (UNIX)
+    # This will allow to use same _DEBUG macro available in both Linux as well as Windows - MSCV environment. 
+    # Easy to put Debug specific code.
+    add_compile_options("$<$<CONFIG:DEBUG>:-D_DEBUG>")    
+endif (UNIX)
 message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
-# Set Project version (used for library versioning and for CPack)
 
 # ######################################################################################################################
 # Project Settings
@@ -73,9 +87,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
                     ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
         )
     endif()
-    # Let's ensure -std=c++xx instead of -std=g++xx
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-    set(CMAKE_CXX_EXTENSIONS OFF)
 
     set(CMAKE_DEBUG_POSTFIX d)
     # Always use '-fPIC'/'-fPIE' option.
@@ -91,6 +102,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # Testing only available if this is the main app Note this needs to be done in the main CMakeLists since it calls
     # enable_testing, which must be in the main CMakeLists.
     include(CTest)
+    
     # ##################################################################################################################
     # Define CMake Module Imports
     # ##################################################################################################################
@@ -98,43 +110,31 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(InstallRequiredSystemLibraries)
     include(GenerateExportHeader)
     include(CMakeParseArguments)
-
+    
     # Setup C/C++ compiler options Compiler settings - special settings for known compilers
     include(CheckCXXCompilerFlag)
     include(CMakePackageConfigHelpers)
     include(CheckTypeSize)
     include(CMakePrintHelpers)
     include(CompilerWarnings)
-    # include(StaticAnalyzers.cmake)
     
-    ########### Add uninstall target ###############
-    CONFIGURE_FILE(
-        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake"
-        IMMEDIATE @ONLY)
+    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    set(CMAKE_CXX_EXTENSIONS OFF)
 
-    ADD_CUSTOM_TARGET(uninstall
-        "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake"
-    )
-
+    #
+    option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
+ 
 endif()
-
-# ######################################################################################################################
-# The location where the project's version header will be placed should match the project's regular header paths. This
-# allows users to install and find the library via `find_package()`.
-# ######################################################################################################################
-set(VERSION_HEADER_LOCATION "${PROJECT_NAME_LOWERCASE}/version.hpp")
-configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/version.hpp.in ${VERSION_HEADER_LOCATION} @ONLY)
-
 
 # ######################################################################################################################
 # Add dependencies
 # ######################################################################################################################
 
 include(CPM)
-CPMAddPackage("gh:TheLartians/Format.cmake@1.7.0")
+CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
 # PackageProject.cmake will be used to make our target installable
-CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.6.0")
+CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
 
 # Collect the built libraries and include directories
 # A semicolon separated list of the project's dependencies
@@ -205,6 +205,18 @@ packageProject(
     # (optional) option to ignore target architecture for package resolution
     # defaults to YES for header only (i.e. INTERFACE) libraries
     ARCH_INDEPENDENT YES
+)
+
+# ######################################################################################################################
+# Add uninstall target
+# ######################################################################################################################
+CONFIGURE_FILE(
+   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+   "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake"
+   IMMEDIATE @ONLY)
+
+ADD_CUSTOM_TARGET(uninstall
+    "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake"
 )
 
 # ######################################################################################################################

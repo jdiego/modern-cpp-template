@@ -142,7 +142,7 @@ set(${PROJECT_NAME}_DEPENDENCIES "")
 
 CPMAddPackage(
   NAME fmt
-  GIT_TAG 8.0.1
+  GIT_TAG 8.1.1
   GITHUB_REPOSITORY fmtlib/fmt
   OPTIONS "FMT_INSTALL YES" # create an installable target
 )

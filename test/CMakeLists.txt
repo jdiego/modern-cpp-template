@@ -18,9 +18,9 @@ option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependenc
 # Adding Dependencies
 # ######################################################################################################################
 CPMAddPackage(
-    NAME doctest
-    GITHUB_REPOSITORY doctest/doctest
-    VERSION 2.4.8
+    NAME ut 
+    GITHUB_REPOSITORY boost-ext/ut
+    GIT_TAG cd12498349362cc646a7140451bf51db2a2dac00
 )
 
 if(TEST_INSTALLED_VERSION)
@@ -39,17 +39,8 @@ add_executable(${TEST_SUITE} ${TEST_SOURCES})
 # ######################################################################################################################
 # Set the compiler standard
 # ######################################################################################################################
-set_target_properties(${TEST_SUITE} PROPERTIES CXX_STANDARD 17)
-
-
-target_link_libraries(${TEST_SUITE} doctest::doctest ${LIB_NAME})
-# ######################################################################################################################
-# Enable compiler warnings
-# ######################################################################################################################
-if(NOT TEST_INSTALLED_VERSION AND MSVC)
-  verbose_message("Setting up DOCTEST to ${TEST_SUITE} test suite on MSCV.")
-  target_compile_definitions(${TEST_SUITE} PUBLIC DOCTEST_CONFIG_USE_STD_HEADERS)
-endif()
+set_target_properties(${TEST_SUITE} PROPERTIES CXX_STANDARD 20)
+target_link_libraries(${TEST_SUITE} ut ${LIB_NAME})
 
 # ######################################################################################################################
 # Setup code coverage if enabled
@@ -69,8 +60,5 @@ enable_testing()
 # frameworks can automatically configure CMake tests. For other testing
 # frameworks add the tests target instead: add_test(NAME greeterTests COMMAND
 # ${TestLib}Tests)
-
-include(${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake)
-doctest_discover_tests(${TEST_SUITE})
 
 verbose_message("Finished adding unit tests for ${CMAKE_PROJECT_NAME}.")

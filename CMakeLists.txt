@@ -146,12 +146,12 @@ CPMAddPackage(
   GITHUB_REPOSITORY fmtlib/fmt
   OPTIONS "FMT_INSTALL YES" # create an installable target
 )
-list(APPEND ${PROJECT_NAME}_DEPENDENCIES "fmt 8.0.1")
+list(APPEND ${PROJECT_NAME}_DEPENDENCIES "fmt 8.1.1")
 
 CPMAddPackage(
     NAME spdlog
-    VERSION 1.9.2
     GITHUB_REPOSITORY gabime/spdlog
+    VERSION 1.9.2
     OPTIONS "SPDLOG_INSTALL YES" # create an installable target
 )
 list(APPEND ${PROJECT_NAME}_DEPENDENCIES "spdlog 1.9.2")

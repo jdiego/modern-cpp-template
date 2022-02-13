@@ -18,5 +18,7 @@ if(Boost_FOUND)
 
   # Make found targets globally available.
   set_target_properties(Boost::boost # This is header only
-                        PROPERTIES IMPORTED_GLOBAL TRUE)
+    PROPERTIES 
+      IMPORTED_GLOBAL TRUE
+  )
 endif()

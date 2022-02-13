@@ -17,7 +17,11 @@ option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependenc
 # ######################################################################################################################
 # Adding Dependencies
 # ######################################################################################################################
-cpmaddpackage("gh:onqtam/doctest#2.4.6")
+CPMAddPackage(
+    NAME doctest
+    GITHUB_REPOSITORY doctest/doctest
+    VERSION 2.4.8
+)
 
 if(TEST_INSTALLED_VERSION)
     find_package(${LIB_NAME} REQUIRED)

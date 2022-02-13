@@ -1,5 +1,6 @@
 #include "modern_cpp_project/greeter.hpp"
 #include <fmt/format.h>
+
 #include <spdlog/spdlog.h>
 using namespace greeter;
 
@@ -18,7 +19,8 @@ std::string Greeter::greet(LanguageCode lang) const {
         case LanguageCode::FR:
             return fmt::format("Bonjour {}!", name);
         default:
-           spdlog::error("The Language Code is invalid: {}", lang);
-           return "error";
+           std::string msg = fmt::format("Error: The Language Code is invalid: {}", name);
+           spdlog::error(msg);
+           return msg;
     }
 }

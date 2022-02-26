@@ -58,7 +58,7 @@ endif()
 enable_testing()
 # Load the desired unit testing framework Note: doctest and similar testing
 # frameworks can automatically configure CMake tests. For other testing
-# frameworks add the tests target instead: add_test(NAME greeterTests COMMAND
-# ${TestLib}Tests)
+# frameworks add the tests target instead: 
+add_test(NAME ${LIB_NAME}Tests COMMAND ${TEST_SUITE})
 
 verbose_message("Finished adding unit tests for ${CMAKE_PROJECT_NAME}.")

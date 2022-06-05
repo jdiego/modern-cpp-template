@@ -52,6 +52,10 @@ endif()
 set_project_warnings(${LIBNAME})
 verbose_message("Applied compiler warnings. Using standard ${CMAKE_CXX_STANDARD}.\n")
 
+# being a cross-platform target, we enforce standards conformance on MSVC
+target_compile_options(${LIBNAME} PRIVATE "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
+
+
 # Link dependencies
 find_package(Threads)
 # Identify and link with the specific "packages" the project uses

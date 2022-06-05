@@ -50,6 +50,9 @@ function(set_project_warnings project_name)
     if(${PROJECT_NAME_UPPERCASE}_WARNINGS_AS_ERRORS)
         set(CLANG_WARNINGS ${CLANG_WARNINGS} -Werror)
         set(MSVC_WARNINGS ${MSVC_WARNINGS} /WX)
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION GREATER_EQUAL 10.0)
+            target_compile_options(${PROJECT_NAME} PRIVATE -Wdeprecated-copy-dtor -Wnewline-eof)
+        endif()
     endif()
 
     set(GCC_WARNINGS

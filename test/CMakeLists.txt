@@ -40,7 +40,7 @@ add_executable(${TEST_SUITE} ${TEST_SOURCES})
 # ######################################################################################################################
 # Set the compiler standard
 # ######################################################################################################################
-set_target_properties(${TEST_SUITE} PROPERTIES CXX_STANDARD 17)
+target_compile_features(${TEST_SUITE} PRIVATE cxx_std_20)
 
 
 target_link_libraries(${TEST_SUITE} doctest::doctest ${LIB_NAME})

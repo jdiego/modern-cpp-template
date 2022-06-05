@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.14...3.22)
 
 set(LIB_NAME ${CMAKE_PROJECT_NAME})
 set(TEST_SUITE ${CMAKE_PROJECT_NAME}-testrunner)
@@ -22,6 +22,7 @@ CPMAddPackage(
     GITHUB_REPOSITORY doctest/doctest
     VERSION 2.4.8
 )
+CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
 
 if(TEST_INSTALLED_VERSION)
     find_package(${LIB_NAME} REQUIRED)

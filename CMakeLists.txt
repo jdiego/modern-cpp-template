@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.14...3.22)
 
 # Make sure that custom modules are found
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -151,7 +151,7 @@ list(APPEND ${PROJECT_NAME}_DEPENDENCIES "fmt 8.1.1")
 CPMAddPackage(
     NAME spdlog
     GITHUB_REPOSITORY gabime/spdlog
-    VERSION 1.9.2
+    VERSION 1.10.0
     OPTIONS "SPDLOG_INSTALL YES" # create an installable target
 )
 list(APPEND ${PROJECT_NAME}_DEPENDENCIES "spdlog 1.9.2")

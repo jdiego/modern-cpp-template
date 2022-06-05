@@ -24,13 +24,8 @@ for line in sys.stdin:
 endef
 export PRINT_HELP_PYSCRIPT
 
-override t := $(shell X="${t}"; echo $${X^^})
-
-
-PROJECT_NAME := "modern_cpp_project"
-
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
-
+PROJECT_NAME := modern_cpp_project
 INSTALL_LOCATION = "/tmp/$(PROJECT_NAME)"
 PROJECT_NAME_UPPERCASE = $(shell echo $(PROJECT_NAME) | tr  '[:lower:]' '[:upper:]')
 

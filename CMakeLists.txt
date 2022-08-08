@@ -41,41 +41,39 @@ endif()
 set(VERSION_HEADER_LOCATION "${PROJECT_NAME_LOWERCASE}/version.hpp")
 configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/version.hpp.in ${VERSION_HEADER_LOCATION} @ONLY)
 
+# ##################################################################################################################
+# Define CMake Module Imports
+# ##################################################################################################################
+include(CMakeParseArguments)
+# Must use GNUInstallDirs to install libraries into correct locations on all platforms.
+include(GNUInstallDirs)
 
 # ######################################################################################################################
 # Define Options
 # ######################################################################################################################
 include(Utils)
-include(StandardSettings)
-include(StaticAnalyzers)
-if (UNIX)
-    # This will allow to use same _DEBUG macro available in both Linux as well as Windows - MSCV environment. 
-    # Easy to put Debug specific code.
-    add_compile_options("$<$<CONFIG:DEBUG>:-D_DEBUG>")    
-endif (UNIX)
-message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
 
 # ######################################################################################################################
 # Project Settings
 # ######################################################################################################################
 
-# Only do these if this is the main project, and not if it is included through add_subdirectory
+message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
+# Only do these if this is the main project, and not if it is included 
+# through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     ##############################################################################
-    #                         C M A K E    C O N T R O L                          #
-    ###############################################################################
-    # Put the libraries and binaries that get built into directories at the top of the build tree rather than in
-    # hard-to-find leaf directories. This simplifies manual testing and the use of the build tree rather than installed
-    # Boost libraries.
+    #                         C M A K E    C O N T R O L                         #
+    ##############################################################################
+    # Put the libraries and binaries that get built into directories at the top of 
+    # the build tree rather than in hard-to-find leaf directories. This simplifies 
+    # manual testing and the use of the build tre.
     set(MAINFOLDER ${PROJECT_SOURCE_DIR})
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-    # Windows DLLs are "runtime" for CMake. Output them to "bin" like the Visual Studio projects do.
+    # Windows DLLs are "runtime" for CMake. 
+    # Output them to "bin" like the Visual Studio projects do.
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-    # Must use GNUInstallDirs to install libraries into correct locations on all platforms.
-    include(GNUInstallDirs)
-
+    
     # Let's nicely support folders in IDE's
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -87,46 +85,19 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
                     ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
         )
     endif()
-
-    set(CMAKE_DEBUG_POSTFIX d)
-    # Always use '-fPIC'/'-fPIE' option.
-    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-    #
-    set(CMAKE_CONFIGURATION_TYPES "Debug" CACHE STRING "" FORCE)
-
-    # Set the Relative Path Configurations
-    set(CMAKE_SKIP_BUILD_RPATH FALSE)
-    set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
+    include(StandardSettings)
+    include(StaticAnalyzers)    
     # Testing only available if this is the main app Note this needs to be done in the main CMakeLists since it calls
     # enable_testing, which must be in the main CMakeLists.
     include(CTest)
-    
-    # ##################################################################################################################
-    # Define CMake Module Imports
-    # ##################################################################################################################
-    include(CMakePackageConfigHelpers)
-    include(InstallRequiredSystemLibraries)
-    include(GenerateExportHeader)
-    include(CMakeParseArguments)
-    
-    # Setup C/C++ compiler options Compiler settings - special settings for known compilers
-    include(CheckCXXCompilerFlag)
-    include(CMakePackageConfigHelpers)
-    include(CheckTypeSize)
-    include(CMakePrintHelpers)
-    include(CompilerWarnings)
-    
-    set(CMAKE_CXX_STANDARD 20)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-    set(CMAKE_CXX_EXTENSIONS OFF)
-
     #
-    option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
- 
 endif()
 
+# Setup C/C++ compiler options Compiler settings - special settings for known compilers
+include(CheckCXXCompilerFlag)
+include(CheckTypeSize)
+include(CMakePrintHelpers)
+include(CompilerWarnings) 
 # ######################################################################################################################
 # Add dependencies
 # ######################################################################################################################
@@ -170,6 +141,17 @@ if(${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING OR ENABLE_TESTING)
     add_subdirectory(test)
 endif()
 
+# ######################################################################################################################
+# Docs only available if this is the main app and enabled
+# ######################################################################################################################
+if(${PROJECT_NAME_UPPERCASE}_ENABLE_DOXYGEN OR ENABLE_DOXYGEN)
+    find_package(Doxygen)
+    if(Doxygen_FOUND)
+        add_subdirectory(docs)
+    else()
+        message(STATUS "Doxygen not found, not building docs")
+    endif()
+endif()
 # ######################################################################################################################
 # PACKING
 # ######################################################################################################################

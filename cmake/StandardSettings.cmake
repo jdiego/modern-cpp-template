@@ -18,15 +18,22 @@ option(${PROJECT_NAME_UPPERCASE}_WARNINGS_AS_ERRORS, "Make all warnings into err
 # ---------------------------------------------------------------------------
 set(${PROJECT_NAME_UPPERCASE}_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include" CACHE STRING "Location of the target's public headers")
 set(${PROJECT_NAME_UPPERCASE}_INCLUDE_DESTINATION  "include" CACHE STRING "Install interface location")
+option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
+
+
 ###############################################################################
 #          C O M P I L E R    A N D    S Y S T E M    O P T I O N S           #
 ###############################################################################
-
-
 # ---------------------------------------------------------------------------
 # Compiler Options
 # ---------------------------------------------------------------------------
 option(CXX_STANDARD_REQUIRED "Require C++ Standard" ON)
+set(CMAKE_DEBUG_POSTFIX d)
+# Always use '-fPIC'/'-fPIE' option.
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+#
+set(CMAKE_CONFIGURATION_TYPES "Debug" CACHE STRING "" FORCE)
+
 
 if (${PROJECT_NAME_UPPERCASE}_MAKEFILE_VERBOSE_OUTPUT)
     set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -55,6 +62,31 @@ endif()
 if (${APPLE})
     set(CMAKE_MACOSX_RPATH 1)
 endif()
+
+if (UNIX)
+    # This will allow to use same _DEBUG macro available in both Linux as well 
+    # as Windows - MSCV environment. Easy to put Debug specific code.
+    add_compile_options("$<$<CONFIG:DEBUG>:-D_DEBUG>")    
+endif (UNIX)
+
+###############################################################################
+# RPATH business
+################################################################################
+# RPATH - how to properly handle rpath https://cmake.org/Wiki/CMake_RPATH_handling
+# RPATH - a list of directories which is linked into the executable, supported on most UNIX systems.
+# By default if you don't change any RPATH related settings, CMake will link the
+# executables and shared libraries with full RPATH to all used libraries in
+# the build tree. When installing, it will clear the RPATH of these targets so
+# they are installed with an empty RPATH. The following settings are recommended
+
+# use, i.e. don't skip the full RPATH for the build tree
+# Set the Relative Path Configurations
+set(CMAKE_SKIP_BUILD_RPATH FALSE)
+# when building, don't use the install RPATH already
+# (but later on when installing)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 # ---------------------------------------------------------------------------
 # Unit testing
 # ---------------------------------------------------------------------------
@@ -89,12 +121,6 @@ endif()
 option(ENABLE_DOXYGEN "Enable Doxygen documentation builds of source." OFF)
 option(${PROJECT_NAME_UPPERCASE}_ENABLE_DOXYGEN "Enable module Doxygen documentation." OFF)
 
-# Docs only available if this is the main app and enabled
-if(${PROJECT_NAME_UPPERCASE}_ENABLE_DOXYGEN OR ENABLE_DOXYGEN)
-    find_package(Doxygen)
-    if(Doxygen_FOUND)
-        add_subdirectory(docs)
-    else()
-        message(STATUS "Doxygen not found, not building docs")
-    endif()
-endif()
+
+
+

@@ -7,6 +7,9 @@ message(STATUS "Started ${TEST_LIB} Test Suite for ${CMAKE_PROJECT_NAME}...\n")
 #
 project(${TESTE_SUITE} LANGUAGES CXX)
 
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # ######################################################################################################################
 # Options
 # ######################################################################################################################

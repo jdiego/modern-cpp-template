@@ -1,4 +1,4 @@
-name: MacOS
+name: Style
 
 on:
   push:
@@ -11,12 +11,11 @@ on:
       - main
 
 env:
-  CTEST_OUTPUT_ON_FAILURE: 1
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -26,13 +25,11 @@ jobs:
           path: "**/cpm_modules"
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
+      - name: Install format dependencies
+        run: pip3 install clang-format==14.0.6 cmake_format==0.6.11 pyyaml
+
       - name: configure
-        run: cmake -Stest -Bbuild -DCMAKE_BUILD_TYPE=Debug
+        run: cmake -Stest -Bbuild
 
-      - name: build
-        run: cmake --build build -j4
-
-      - name: test
-        run: |
-          cd build
-          ctest --build-config Debug
+      - name: check style
+        run: cmake --build build --target check-format

@@ -20,7 +20,7 @@ option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependenc
 CPMAddPackage(
     NAME doctest
     GITHUB_REPOSITORY doctest/doctest
-    VERSION 2.4.8
+    VERSION 2.4.11
 )
 CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
 

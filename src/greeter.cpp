@@ -1,7 +1,7 @@
 #include "modern_cpp_project/greeter.hpp"
 #include <fmt/format.h>
-
 #include <spdlog/spdlog.h>
+
 using namespace greeter;
 
 Greeter::Greeter(std::string _name) : name(std::move(_name)) {

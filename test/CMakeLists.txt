@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14...3.22)
+cmake_minimum_required(VERSION 3.22)
 
 set(LIB_NAME ${CMAKE_PROJECT_NAME})
 set(TEST_SUITE ${CMAKE_PROJECT_NAME}-testrunner)

@@ -41,7 +41,7 @@ endif()
 
 if(NOT DEFINED CMAKE_CXX_STANDARD)
     # Let's ensure -std=c++xx instead of -std=g++xx
-    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD 23)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
 endif()

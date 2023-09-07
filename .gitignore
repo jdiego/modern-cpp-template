@@ -44,3 +44,6 @@ compile_commands.json
 
 # Caches
 .cache
+
+# Check files
+cppcheck.txt

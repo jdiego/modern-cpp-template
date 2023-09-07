@@ -46,10 +46,12 @@ test: ## run tests quickly with ctest
 	cd build/ && ctest -C Release -VV
 
 coverage: ## check code coverage quickly GCC
+	mkdir -p build/gcov 
 	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -DENABLE_CODE_COVERAGE=1
 	cmake --build build --config Release
 	cd build/ && ctest -C Release -VV
-	cd .. && (bash -c "find . -type f -name '*.gcno' -exec gcov -pb {} +" || true)
+	cd build && (bash -c "find ../ -type f -name '*.gcno' -exec gcov -pb {} +" || true)
+
 
 docs: ## generate Doxygen HTML documentation, including API docs
 	rm -rf docs/

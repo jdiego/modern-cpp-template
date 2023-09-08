@@ -1,25 +1,27 @@
 cmake_minimum_required(VERSION 3.22)
 
-set(LIB_NAME ${CMAKE_PROJECT_NAME})
-set(TEST_SUITE ${CMAKE_PROJECT_NAME}-testrunner)
-include (Utils)
-message(STATUS "Started ${TEST_LIB} Test Suite for ${CMAKE_PROJECT_NAME}...\n")
-#
+
 project(${TESTE_SUITE} LANGUAGES CXX)
 
+set(LIB_NAME ${CMAKE_PROJECT_NAME})
+set(TEST_SUITE ${CMAKE_PROJECT_NAME}-testrunner)
 
+message(STATUS "Started ${TEST_LIB} Test Suite for ${CMAKE_PROJECT_NAME}...\n")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+
+include (../cmake/Utils)
 # ######################################################################################################################
 # Options
 # ######################################################################################################################
 option(TEST_INSTALLED_VERSION "Test the version found by find_package" OFF)
 option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
 
+# ######################################################################################################################
+# Dependencies
+# ######################################################################################################################
+include(../cmake/CPM.cmake)
 
-# ######################################################################################################################
-# Adding Dependencies
-# ######################################################################################################################
 CPMAddPackage(
     NAME doctest
     GITHUB_REPOSITORY doctest/doctest

@@ -51,7 +51,7 @@ include(GNUInstallDirs)
 # ######################################################################################################################
 # Define Options
 # ######################################################################################################################
-include(Utils)
+include(cmake/Utils.cmake)
 
 # ######################################################################################################################
 # Project Settings
@@ -97,12 +97,12 @@ endif()
 include(CheckCXXCompilerFlag)
 include(CheckTypeSize)
 include(CMakePrintHelpers)
-include(CompilerWarnings) 
+include(cmake/CompilerWarnings.cmake) 
 # ######################################################################################################################
 # Add dependencies
 # ######################################################################################################################
 
-include(CPM)
+include(cmake/CPM.cmake)
 CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
 
 # PackageProject.cmake will be used to make our target installable
@@ -128,6 +128,17 @@ CPMAddPackage(
 )
 
 list(APPEND ${PROJECT_NAME}_DEPENDENCIES "spdlog 1.12.0")
+
+
+# ######################################################################################################################
+# Add version header
+# ######################################################################################################################
+
+configure_file(
+    ${CMAKE_CURRENT_LIST_DIR}/cmake/version.hpp.in
+    include/${PROJECT_NAME_LOWERCASE}/version.hpp
+    @ONLY
+)
 
 # ######################################################################################################################
 # Source tree
@@ -219,11 +230,11 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     if(CMAKE_TOOLCHAIN_FILE)
         message(STATUS "[cmake] Use toolchain file:		${CMAKE_TOOLCHAIN_FILE}")
     endif()
+    string(TOUPPER "${CMAKE_BUILD_TYPE}" BUILD_TYPE)
     message(STATUS "[cmake] Build for OS type:      ${CMAKE_SYSTEM_NAME}")
     message(STATUS "[cmake] Build for OS version:   ${CMAKE_SYSTEM_VERSION}")
     message(STATUS "[cmake] Build for CPU type:     ${CMAKE_SYSTEM_PROCESSOR}")
     message(STATUS "[cmake] Build type:             ${CMAKE_BUILD_TYPE}")
-    string(TOUPPER "${CMAKE_BUILD_TYPE}" BUILD_TYPE)
     message(STATUS "[cmake] Build with cxx flags:   ${CMAKE_CXX_FLAGS_${BUILD_TYPE}} ${CMAKE_CXX_FLAGS}")
     message(STATUS "[cmake] Build with c flags:     ${CMAKE_C_FLAGS_${BUILD_TYPE}} ${CMAKE_C_FLAGS}")
 endif()

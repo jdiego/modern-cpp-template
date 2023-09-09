@@ -10,7 +10,7 @@ message(STATUS "Started ${TEST_LIB} Test Suite for ${CMAKE_PROJECT_NAME}...\n")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-include (../cmake/Utils)
+include(../cmake/Utils.cmake)
 # ######################################################################################################################
 # Options
 # ######################################################################################################################

@@ -91,7 +91,6 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 # ---------------------------------------------------------------------------
 # Unit testing
 # ---------------------------------------------------------------------------
-option(ENABLE_TESTING "Build all tests" OFF)
 option(${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING "Enable unit tests for the ${PROJECT_NAME} (from the `test` subfolder)." ON)
 
 # ---------------------------------------------------------------------------

@@ -159,7 +159,7 @@ ADD_CUSTOM_TARGET(uninstall
 
 
 # ######################################################################################################################
-# Unit testing setup
+# Unit testing setup: Testing only available if this is the main app
 # ######################################################################################################################
 if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND (${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING OR ENABLE_TESTING) AND BUILD_TESTING)
     message(STATUS "Build unit tests for the project. Tests should always be found in the test folder\n")

@@ -1,4 +1,3 @@
-
 #include "modern_cpp_project/greeter.hpp"
 #include "modern_cpp_project/version.hpp"
 #include <doctest/doctest.h>

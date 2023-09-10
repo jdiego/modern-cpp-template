@@ -1,6 +1,7 @@
 # ---------------------------------------------------------------------------
 # Project settings
 # ---------------------------------------------------------------------------
+option(${PROJECT_NAME}_USE_ALT_NAMES "Use alternative names for the project, such as naming the include directory all lowercase." ON)
 option(${PROJECT_NAME_UPPERCASE}_BUILD_HEADERS_ONLY "Build the project as an header only library." OFF)
 option(${PROJECT_NAME_UPPERCASE}_BUILD_EXECUTABLE "Build the project as an executable, rather than a library." OFF)
 option(${PROJECT_NAME_UPPERCASE}_BUILD_HEADERS_ONLY "Build the project as a header-only library." OFF)
@@ -13,27 +14,27 @@ option(${PROJECT_NAME_UPPERCASE}_VERBOSE_OUTPUT "Enable verbose output, allowing
 option(${PROJECT_NAME_UPPERCASE}_GENERATE_EXPORT_HEADER "Create a `project_export.h` file containing all exported symbols." OFF)
 option(${PROJECT_NAME_UPPERCASE}_THREAD_PREFER_PTHREAD "prefer pthread library on system with multiple thread libraries available." ON)
 option(${PROJECT_NAME_UPPERCASE}_WARNINGS_AS_ERRORS, "Make all warnings into errors." OFF)
-# ---------------------------------------------------------------------------
-# Packing options
-# ---------------------------------------------------------------------------
-set(${PROJECT_NAME_UPPERCASE}_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include" CACHE STRING "Location of the target's public headers")
-set(${PROJECT_NAME_UPPERCASE}_INCLUDE_DESTINATION  "include" CACHE STRING "Install interface location")
 option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
+
+
+if(${PROJECT_NAME}_USE_ALT_NAMES)
+    string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)
+    string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPERCASE)
+else()
+    set(PROJECT_NAME_LOWERCASE ${PROJECT_NAME})
+    set(PROJECT_NAME_UPPERCASE ${PROJECT_NAME})
+endif()
 
 
 ###############################################################################
 #          C O M P I L E R    A N D    S Y S T E M    O P T I O N S           #
 ###############################################################################
-# ---------------------------------------------------------------------------
-# Compiler Options
-# ---------------------------------------------------------------------------
 option(CXX_STANDARD_REQUIRED "Require C++ Standard" ON)
 set(CMAKE_DEBUG_POSTFIX d)
 # Always use '-fPIC'/'-fPIE' option.
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 #
 set(CMAKE_CONFIGURATION_TYPES "Debug" CACHE STRING "" FORCE)
-
 
 if (${PROJECT_NAME_UPPERCASE}_MAKEFILE_VERBOSE_OUTPUT)
     set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -120,7 +121,3 @@ endif()
 # ---------------------------------------------------------------------------
 option(ENABLE_DOXYGEN "Enable Doxygen documentation builds of source." OFF)
 option(${PROJECT_NAME_UPPERCASE}_ENABLE_DOXYGEN "Enable module Doxygen documentation." OFF)
-
-
-
-

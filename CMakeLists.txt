@@ -1,107 +1,48 @@
 cmake_minimum_required(VERSION 3.22)
 
-# Make sure that custom modules are found
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-
-# Enables the Visibility Property on all target types
-cmake_policy(SET CMP0063 NEW)
-# Enables the MSVC_RUNTIME_LIBRARY property on targets
-cmake_policy(SET CMP0091 NEW)
-
+# ######################################################################################################################
 # Define the Project Name and Description
+# ######################################################################################################################
 project(
     modern_cpp_project
     VERSION 1.0.0
     LANGUAGES CXX
-    DESCRIPTION "moderncpp-project is a starter project for Modern C++"
+    DESCRIPTION "ModernCppProject is a project template for Modern C++"
 )
+
+# Make sure that custom modules are found
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+
 # ######################################################################################################################
 # Include guards: Prevent building in the source directory
 # ######################################################################################################################
 if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
   message(FATAL_ERROR "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there.\n")
 endif()
-#
 
-set(CMAKE_PROJECT_VERSION ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}.${CMAKE_PROJECT_VERSION_PATCH})
-option(${PROJECT_NAME}_USE_ALT_NAMES "Use alternative names for the project, such as naming the include directory all lowercase." ON)
 
-if(${PROJECT_NAME}_USE_ALT_NAMES)
-    string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)
-    string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPERCASE)
-else()
-    set(PROJECT_NAME_LOWERCASE ${PROJECT_NAME})
-    set(PROJECT_NAME_UPPERCASE ${PROJECT_NAME})
-endif()
-
-# ######################################################################################################################
-# The location where the project's version header will be placed should match the project's regular header paths. This
-# allows users to install and find the library via `find_package()`.
-# ######################################################################################################################
-set(VERSION_HEADER_LOCATION "${PROJECT_NAME_LOWERCASE}/version.hpp")
-configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/version.hpp.in ${VERSION_HEADER_LOCATION} @ONLY)
-
-# ##################################################################################################################
-# Define CMake Module Imports
-# ##################################################################################################################
-include(CMakeParseArguments)
-# Must use GNUInstallDirs to install libraries into correct locations on all platforms.
-include(GNUInstallDirs)
-
-# ######################################################################################################################
-# Define Options
-# ######################################################################################################################
-include(cmake/Utils.cmake)
-
-# ######################################################################################################################
-# Project Settings
-# ######################################################################################################################
-
-message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
-# Only do these if this is the main project, and not if it is included 
-# through add_subdirectory
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    ##############################################################################
-    #                         C M A K E    C O N T R O L                         #
-    ##############################################################################
-    # Put the libraries and binaries that get built into directories at the top of 
-    # the build tree rather than in hard-to-find leaf directories. This simplifies 
-    # manual testing and the use of the build tre.
-    set(MAINFOLDER ${PROJECT_SOURCE_DIR})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-    # Windows DLLs are "runtime" for CMake. 
-    # Output them to "bin" like the Visual Studio projects do.
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-    
-    # Let's nicely support folders in IDE's
-    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-    # Generate the compile_commands.json file
-    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-    if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json")
-        execute_process(
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json
-                    ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
-        )
-    endif()
-    include(StandardSettings)
-    include(StaticAnalyzers)    
-    # Testing only available if this is the main app Note this needs to be done in the main CMakeLists since it calls
-    # enable_testing, which must be in the main CMakeLists.
-    include(CTest)
-    #
-endif()
-
-# Setup C/C++ compiler options Compiler settings - special settings for known compilers
 include(CheckCXXCompilerFlag)
 include(CheckTypeSize)
 include(CMakePrintHelpers)
+include(cmake/Utils.cmake)
 include(cmake/CompilerWarnings.cmake) 
+
+# ######################################################################################################################
+# Import top level settings.
+# Warning: They only activate for top level project, and not if it is included through add_subdirectory
+# ######################################################################################################################
+include(cmake/GlobalSettings.cmake) 
+
+# ######################################################################################################################
+# Setup project : Import standard settings
+# ######################################################################################################################
+include(cmake/StandardSettings.cmake)
+
+
+message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
 # ######################################################################################################################
 # Add dependencies
 # ######################################################################################################################
-
 include(cmake/CPM.cmake)
 CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
 
@@ -131,42 +72,43 @@ list(APPEND ${PROJECT_NAME}_DEPENDENCIES "spdlog 1.12.0")
 
 
 # ######################################################################################################################
-# Add version header
+# Source tree
 # ######################################################################################################################
+#add_subdirectory(src)
 
-configure_file(
-    ${CMAKE_CURRENT_LIST_DIR}/cmake/version.hpp.in
-    include/${PROJECT_NAME_LOWERCASE}/version.hpp
-    @ONLY
+file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp")
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+
+add_library(${PROJECT_NAME} ${headers} ${sources})
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 23)
+# being a cross-platform target, we enforce standards conformance on MSVC
+target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
+
+
+
+# Link dependencies
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt spdlog::spdlog)
+
+target_include_directories(
+    ${PROJECT_NAME} 
+    PUBLIC 
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
+    # Set the build/user include directories to allow usage of header files in the
+    # `src` directory, but only for utilities
+    PRIVATE 
+        ${CMAKE_SOURCE_DIR}/src
 )
 
 # ######################################################################################################################
-# Source tree
+# Add version header
+# the location where the project's version header will be placed should match the project's regular header paths
 # ######################################################################################################################
-add_subdirectory(extern)
-add_subdirectory(src)
+set(VERSION_HEADER_LOCATION "${PROJECT_NAME_LOWERCASE}/version.hpp")
+configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/version.hpp.in ${VERSION_HEADER_LOCATION} @ONLY)
 
 # ######################################################################################################################
-# Unit testing setup
-# ######################################################################################################################
-if(${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING OR ENABLE_TESTING)
-    message(STATUS "Build unit tests for the project. Tests should always be found in the test folder\n")
-    add_subdirectory(test)
-endif()
-
-# ######################################################################################################################
-# Docs only available if this is the main app and enabled
-# ######################################################################################################################
-if(${PROJECT_NAME_UPPERCASE}_ENABLE_DOXYGEN OR ENABLE_DOXYGEN)
-    find_package(Doxygen)
-    if(Doxygen_FOUND)
-        add_subdirectory(docs)
-    else()
-        message(STATUS "Doxygen not found, not building docs")
-    endif()
-endif()
-# ######################################################################################################################
-# PACKING
+# Create an installable target
 # ######################################################################################################################
 packageProject(
     # the name of the target to export
@@ -182,7 +124,7 @@ packageProject(
     INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
     # Install the `include` directory.
     # NOTE: should match the target's INSTALL_INTERFACE include directory
-    INCLUDE_DESTINATION include
+    INCLUDE_DESTINATION include/${PROJECT_NAME}-${PROJECT_VERSION}
     # (optional) create a header containing the version info
     # Note: that the path to headers should be lowercase
     VERSION_HEADER "${VERSION_HEADER_LOCATION}"
@@ -202,6 +144,7 @@ packageProject(
     ARCH_INDEPENDENT YES
 )
 
+
 # ######################################################################################################################
 # Add uninstall target
 # ######################################################################################################################
@@ -213,6 +156,15 @@ CONFIGURE_FILE(
 ADD_CUSTOM_TARGET(uninstall
     "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake"
 )
+
+
+# ######################################################################################################################
+# Unit testing setup
+# ######################################################################################################################
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND (${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING OR ENABLE_TESTING) AND BUILD_TESTING)
+    message(STATUS "Build unit tests for the project. Tests should always be found in the test folder\n")
+    add_subdirectory(test)
+endif()
 
 # ######################################################################################################################
 # INFO
@@ -237,4 +189,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     message(STATUS "[cmake] Build type:             ${CMAKE_BUILD_TYPE}")
     message(STATUS "[cmake] Build with cxx flags:   ${CMAKE_CXX_FLAGS_${BUILD_TYPE}} ${CMAKE_CXX_FLAGS}")
     message(STATUS "[cmake] Build with c flags:     ${CMAKE_C_FLAGS_${BUILD_TYPE}} ${CMAKE_C_FLAGS}")
+    message(STATUS "[cmake] Source Directory:       ${CMAKE_SOURCE_DIR}")
+    message(STATUS "[cmake] Project Directory:      ${PROJECT_SOURCE_DIR}")
 endif()

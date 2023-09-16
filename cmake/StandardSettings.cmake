@@ -13,7 +13,7 @@ option(${PROJECT_NAME_UPPERCASE}_VERBOSE_OUTPUT "Enable verbose output, allowing
 option(${PROJECT_NAME_UPPERCASE}_GENERATE_EXPORT_HEADER "Create a `project_export.h` file containing all exported symbols." OFF)
 option(${PROJECT_NAME_UPPERCASE}_THREAD_PREFER_PTHREAD "prefer pthread library on system with multiple thread libraries available." ON)
 option(${PROJECT_NAME_UPPERCASE}_WARNINGS_AS_ERRORS, "Make all warnings into errors." OFF)
-option(${PROJECT_NAME_UPPERCASE}_ENABLE_STANDALONE, "Build and run the standalone target" OFF)
+option(${PROJECT_NAME_UPPERCASE}_ENABLE_STANDALONE, "Build and run the standalone target" ON)
 # ---------------------------------------------------------------------------
 # Packing options
 # ---------------------------------------------------------------------------

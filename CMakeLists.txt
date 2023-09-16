@@ -178,7 +178,9 @@ if (PROJECT_IS_TOP_LEVEL AND ${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING)
     add_subdirectory(test)
 endif()
 
-add_subdirectory(standalone)
+if (PROJECT_IS_TOP_LEVEL AND ${PROJECT_NAME_UPPERCASE}_ENABLE_STANDALONE)
+    add_subdirectory(standalone)
+endif()
 
 # ######################################################################################################################
 # INFO

@@ -7,7 +7,7 @@ else()
 endif()
 
 set(TEST_SUITE ${MODULE_NAME}TestRunner)
-project(${TESTE_SUITE} LANGUAGES CXX)
+project(${TEST_SUITE} LANGUAGES CXX)
 
 message(STATUS "Started ${TEST_SUITE} Test Suite for ${CMAKE_PROJECT_NAME}...\n")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

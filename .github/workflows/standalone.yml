@@ -11,6 +11,10 @@ on:
       - main
 
 env:
+  BUILD_TYPE: Release
+  INSTALL_LOCATION: .local
+  PROJECT_NAME: "MODERN_CPP_PROJECT"
+  APP_NAME: App
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
 
 jobs:
@@ -26,10 +30,10 @@ jobs:
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
       - name: configure
-        run: cmake -Sstandalone -Bbuild -DCMAKE_BUILD_TYPE=Debug
+        run: cmake -Sstandalone -Bbuild -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
 
       - name: build
         run: cmake --build build -j4
 
       - name: run
-        run: ./build/Greeter
+        run: ./build/bin/${PROJECT_NAME}

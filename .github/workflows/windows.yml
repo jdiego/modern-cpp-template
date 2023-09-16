@@ -32,12 +32,12 @@ jobs:
         run: cmake -Bbuild -DCMAKE_INSTALL_PREFIX="$HOME/$INSTALL_LOCATION"
 
       - name: build
-        run: cmake --build build --config ${BUILD_TYPE} -j4
+        run: cmake --build build --config $BUILD_TYPE -j4
 
       - name: test
         run: |
           cd build
-          ctest -C ${BUILD_TYPE} -VV
+          ctest -C $BUILD_TYPE -VV
       
       - name: install project
-        run: cmake --build build --target install --config ${BUILD_TYPE}
+        run: cmake --build build --target install --config $BUILD_TYPE

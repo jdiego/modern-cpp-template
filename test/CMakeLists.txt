@@ -61,7 +61,7 @@ if(NOT TEST_USE_INSTALLED_VERSION)
         target_compile_options(${MODULE_NAME} PUBLIC -Wall -Wpedantic -Wextra -Werror)
     elseif(MSVC)
         target_compile_options(${MODULE_NAME} PUBLIC /W4 /WX)
-        target_compile_definitions(${PROJECT_NAME} PUBLIC DOCTEST_CONFIG_USE_STD_HEADERS)
+        target_compile_definitions(${TEST_SUITE} PUBLIC DOCTEST_CONFIG_USE_STD_HEADERS)
     endif()
 
     target_compile_definitions(${TEST_SUITE} PUBLIC DOCTEST_CONFIG_USE_STD_HEADERS)

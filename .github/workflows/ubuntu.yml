@@ -31,8 +31,8 @@ jobs:
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
       - name: configure
-        run: cmake -Bbuild -D${PROJECT_NAME}_ENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-
+        run: cmake -Bbuild -D${PROJECT_NAME}_ENABLE_TEST_COVERAGE=1 -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/$INSTALL_LOCATION
+        
       - name: build
         run: cmake --build build --config $BUILD_TYPE -j4
 
@@ -43,7 +43,7 @@ jobs:
 
       - name: install project
         run: cmake --build build --target install --config $BUILD_TYPE 
-
+      
       - name: collect code coverage
         run: bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
     

@@ -1,12 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 
-if (${CMAKE_PROJECT_NAME})
-    set(MODULE_NAME ${CMAKE_PROJECT_NAME})
-else()
-    set(MODULE_NAME modern_cpp_project)
-endif()
+include(../cmake/Info.cmake)
 
-project(Standalone LANGUAGES CXX)
+project(${STANDALONE_PROJECT_NAME} LANGUAGES CXX)
 
 # --- Import tools ----
 
@@ -28,9 +24,9 @@ CPMAddPackage(
 )
 
 if(STANDALONE_USE_INSTALLED_VERSION)
-    find_package(${MODULE_NAME} REQUIRED)
+    find_package(${MAIN_PROJECT_NAME} REQUIRED)
 elseif(PROJECT_IS_TOP_LEVEL)
-    CPMAddPackage(NAME ${MODULE_NAME} SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
+    CPMAddPackage(NAME ${MAIN_PROJECT_NAME} SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 endif()
 
 # ---- Create standalone executable ----
@@ -39,6 +35,6 @@ file(GLOB sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 add_executable(${PROJECT_NAME} ${sources})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 23 OUTPUT_NAME ${MODULE_NAME})
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 23 OUTPUT_NAME ${PROJECT_NAME})
 
-target_link_libraries(${PROJECT_NAME} ${MODULE_NAME} cxxopts)
+target_link_libraries(${PROJECT_NAME} ${MAIN_PROJECT_NAME}::${MAIN_PROJECT_NAME} cxxopts)

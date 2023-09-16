@@ -10,20 +10,18 @@ endif()
 # Make sure that custom modules are found
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-# ######################################################################################################################
-# Define the Project Name and Description
-# ######################################################################################################################
-project(
-    modern_cpp_project
-    VERSION 1.0.0
-    LANGUAGES CXX
-    DESCRIPTION "ModernCppProject is a project template for Modern C++"
-)
-
+#
 include(CMakeDependentOption)
 include(CheckCXXCompilerFlag)
 include(CheckTypeSize)
 include(CMakePrintHelpers)
+#
+
+include(cmake/Info.cmake)
+# ######################################################################################################################
+# Define the Project Name and Description
+# ######################################################################################################################
+project(${MAIN_PROJECT_NAME} VERSION 1.0.0 LANGUAGES CXX DESCRIPTION   ${MAIN_PROJECT_DESCRIPTION})
 
 option(${PROJECT_NAME}_USE_ALT_NAMES "Use alternative names for the project, such as naming the include directory all lowercase." ON)
 if(${PROJECT_NAME}_USE_ALT_NAMES)
@@ -184,14 +182,15 @@ if (PROJECT_IS_TOP_LEVEL AND ${PROJECT_NAME_UPPERCASE}_ENABLE_STANDALONE)
     add_subdirectory(standalone)
 endif()
 
+
 # ######################################################################################################################
 # INFO
 # ######################################################################################################################
 if(PROJECT_IS_TOP_LEVEL)
     message(STATUS "CMake ${CMAKE_VERSION} successfully configured ${PROJECT_NAME} using ${CMAKE_GENERATOR} generator")
-    message(STATUS "${PROJECT_NAME} package version: ${CMAKE_PROJECT_VERSION}")
-    message(STATUS "${PROJECT_NAME} package dependencies: ${${PROJECT_NAME}_DEPENDENCIES}")
-    message(STATUS "${PROJECT_NAME} shared libraries: ${${PROJECT_NAME_UPPERCASE}_BUILD_SHARED_LIBS}")
+    message(STATUS "[${PROJECT_NAME_LOWERCASE}] package version: ${CMAKE_PROJECT_VERSION}")
+    message(STATUS "[${PROJECT_NAME_LOWERCASE}] package dependencies: ${${PROJECT_NAME}_DEPENDENCIES}")
+    message(STATUS "[${PROJECT_NAME_LOWERCASE}] shared libraries: ${${PROJECT_NAME_UPPERCASE}_BUILD_SHARED_LIBS}")
     if(${BUILD_SHARED_LIBS})
         message(STATUS "Building dynamic libraries")
     else()

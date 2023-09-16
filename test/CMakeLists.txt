@@ -74,8 +74,14 @@ endif()
 # For other testing frameworks add the tests target instead: 
 # add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 
-include(${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake)
-doctest_discover_tests(${TEST_SUITE})
+# testing frameworks add the tests target instead:
+if(NOT doctest_SOURCE_DIR)
+    add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
+else()
+    include(${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake)
+    doctest_discover_tests(${TEST_SUITE})
+endif()
+
 
 
 # ######################################################################################################################

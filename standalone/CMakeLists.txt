@@ -35,6 +35,6 @@ file(GLOB sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 add_executable(${PROJECT_NAME} ${sources})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 23 OUTPUT_NAME ${PROJECT_NAME})
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 23 OUTPUT_NAME ${MAIN_PROJECT_NAME})
 
 target_link_libraries(${PROJECT_NAME} ${MAIN_PROJECT_NAME}::${MAIN_PROJECT_NAME} cxxopts)

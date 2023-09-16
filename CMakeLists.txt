@@ -65,7 +65,7 @@ if(NOT PROJECT_IS_TOP_LEVEL)
         ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
         )
     endif() 
-    include(${CMAKE_CURRENT_LIST_DIR}/StaticAnalyzers.cmake)
+    include(cmake/StaticAnalyzers.cmake)
 endif()
 
 if(NOT CMAKE_BUILD_TYPE)

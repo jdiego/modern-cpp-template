@@ -36,7 +36,7 @@ auto main(int argc, char** argv) -> int {
     }
 
     if (result["version"].as<bool>()) {
-        std::cout << "Greeter, version " << GREETER_VERSION << std::endl;
+        std::cout << "Greeter, version " << MODERN_CPP_PROJECT_VERSION << std::endl;
         return 0;
     }
 

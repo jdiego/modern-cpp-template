@@ -111,11 +111,12 @@ list(APPEND ${PROJECT_NAME}_DEPENDENCIES "spdlog 1.12.0")
 add_subdirectory(src)
 
 # ######################################################################################################################
-# Add version header
-# the location where the project's version header will be placed should match the project's regular header paths
+# Add version header: the location where the project's version header will be placed should match the project's 
+# regular header paths
 # ######################################################################################################################
-#set(VERSION_HEADER_LOCATION "${PROJECT_NAME_LOWERCASE}/version.hpp")
-#configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/version.hpp.in ${VERSION_HEADER_LOCATION} @ONLY)
+set(VERSION_HEADER_LOCATION "${PROJECT_NAME_LOWERCASE}/version.hpp")
+configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/version.hpp.in include/${VERSION_HEADER_LOCATION} @ONLY)
+
 string(TOLOWER ${PROJECT_NAME}/version.hpp VERSION_HEADER_LOCATION)
 
 # ######################################################################################################################

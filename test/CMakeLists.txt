@@ -1,12 +1,9 @@
 cmake_minimum_required(VERSION 3.22)
 
-
+set(TEST_SUITE ${MODULE_NAME}TestRunner)
 project(${TESTE_SUITE} LANGUAGES CXX)
 
-set(LIB_NAME ${CMAKE_PROJECT_NAME})
-set(TEST_SUITE ${CMAKE_PROJECT_NAME}-testrunner)
-
-message(STATUS "Started ${TEST_LIB} Test Suite for ${CMAKE_PROJECT_NAME}...\n")
+message(STATUS "Started ${TEST_SUITE} Test Suite for ${CMAKE_PROJECT_NAME}...\n")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
@@ -14,7 +11,7 @@ include(../cmake/Utils.cmake)
 # ######################################################################################################################
 # Options
 # ######################################################################################################################
-option(TEST_INSTALLED_VERSION "Test the version found by find_package" OFF)
+option(TEST_SHOULD_USE_INSTALLED_VERSION "Test the version found by find_package" OFF)
 option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
 
 # ######################################################################################################################
@@ -29,11 +26,11 @@ CPMAddPackage(
 )
 CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
 
-if(TEST_INSTALLED_VERSION)
-    find_package(${LIB_NAME} REQUIRED)
+if(TEST_SHOULD_USE_INSTALLED_VERSION)
+    find_package(${MODULE_NAME} REQUIRED)
 elseif(NOT ${${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING})
-    verbose_message("Adding {LIB_NAME}.")
-    CPMAddPackage(NAME ${ProjectModule} SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
+    verbose_message("Adding ${MODULE_NAME}.")
+    CPMAddPackage(NAME ${MODULE_NAME} SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 endif()
 
 # ######################################################################################################################
@@ -62,8 +59,8 @@ endif()
 # ######################################################################################################################
 if (${CMAKE_PROJECT_NAME}_ENABLE_CODE_COVERAGE OR ENABLE_CODE_COVERAGE)
   # ---- code coverage ----
-  target_compile_options(${CMAKE_PROJECT_NAME} PUBLIC -O0 -g -fprofile-arcs -ftest-coverage)
-  target_link_options(${CMAKE_PROJECT_NAME} PUBLIC -fprofile-arcs -ftest-coverage)
+  target_compile_options(${MODULE_NAME} PUBLIC -O0 -g -fprofile-arcs -ftest-coverage)
+  target_link_options(${MODULE_NAME} PUBLIC -fprofile-arcs -ftest-coverage)
 endif()
 
 
@@ -79,4 +76,4 @@ enable_testing()
 include(${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake)
 doctest_discover_tests(${TEST_SUITE})
 
-verbose_message("Finished adding unit tests for ${CMAKE_PROJECT_NAME}.")
+verbose_message("Finished adding unit tests for ${MODULE_NAME}.")

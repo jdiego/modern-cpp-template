@@ -20,7 +20,6 @@ set(${PROJECT_NAME_UPPERCASE}_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include" CACHE 
 set(${PROJECT_NAME_UPPERCASE}_INCLUDE_DESTINATION  "include" CACHE STRING "Install interface location")
 option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
 
-
 ###############################################################################
 #          C O M P I L E R    A N D    S Y S T E M    O P T I O N S           #
 ###############################################################################
@@ -68,6 +67,7 @@ if (UNIX)
     # as Windows - MSCV environment. Easy to put Debug specific code.
     add_compile_options("$<$<CONFIG:DEBUG>:-D_DEBUG>")    
 endif (UNIX)
+
 
 ###############################################################################
 # RPATH business

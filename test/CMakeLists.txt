@@ -17,7 +17,7 @@ include(../cmake/Utils.cmake)
 # ######################################################################################################################
 # Options
 # ######################################################################################################################
-option(TEST_SHOULD_USE_INSTALLED_VERSION "Test the version found by find_package" OFF)
+option(TEST_USE_INSTALLED_VERSION "Test the version found by find_package" OFF)
 option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependencies" TRUE)
 
 # ######################################################################################################################
@@ -32,7 +32,7 @@ CPMAddPackage(
 )
 CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
 
-if(TEST_SHOULD_USE_INSTALLED_VERSION)
+if(TEST_USE_INSTALLED_VERSION)
     find_package(${MODULE_NAME} REQUIRED)
 elseif(PROJECT_IS_TOP_LEVEL)
     CPMAddPackage(NAME ${MODULE_NAME} SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
@@ -56,7 +56,7 @@ target_link_libraries(${TEST_SUITE} doctest::doctest ${MODULE_NAME})
 # ######################################################################################################################
 # Enable compiler warnings
 # ######################################################################################################################
-if(NOT TEST_SHOULD_USE_INSTALLED_VERSION)
+if(NOT TEST_USE_INSTALLED_VERSION)
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         target_compile_options(${MODULE_NAME} PUBLIC -Wall -Wpedantic -Wextra -Werror)
     elseif(MSVC)

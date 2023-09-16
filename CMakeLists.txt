@@ -45,7 +45,7 @@ include(cmake/CompilerWarnings.cmake)
 # Global Project Settings
 # only activate for top level project
 ##############################################################################
-if(NOT PROJECT_IS_TOP_LEVEL)
+if(PROJECT_IS_TOP_LEVEL)
     # Put the libraries and binaries that get built into directories at the top of 
     # the build tree rather than in hard-to-find leaf directories. This simplifies 
     # manual testing and the use of the build tre.
@@ -61,8 +61,8 @@ if(NOT PROJECT_IS_TOP_LEVEL)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
     if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json")
         execute_process(
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json
-        ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
         )
     endif() 
     include(cmake/StaticAnalyzers.cmake)

@@ -30,7 +30,7 @@ jobs:
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
       - name: configure
-        run: cmake -Bbuild -D${PROJECT_NAME}_ENABLE_STANDALONE=1 -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+        run: cmake -Bbuild -D${PROJECT_NAME}_BUILD_EXECUTABLE=1 -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
       - name: build
         run: cmake --build build -j4

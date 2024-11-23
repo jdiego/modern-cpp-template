@@ -30,6 +30,13 @@ CPMAddPackage(
     GITHUB_REPOSITORY doctest/doctest
     VERSION 2.4.11
 )
+
+CPMAddPackage(
+    NAME ut
+    GITHUB_REPOSITORY boost-ext/ut
+    VERSION  2.1.1
+)
+
 CPMAddPackage("gh:TheLartians/Format.cmake@1.8.1")
 
 if(TEST_USE_INSTALLED_VERSION)
@@ -51,8 +58,7 @@ verbose_message("Adding ${TEST_SOURCES} to ${TEST_SUITE} test suite.")
 # ######################################################################################################################
 add_executable(${TEST_SUITE} ${TEST_SOURCES})
 target_compile_features(${TEST_SUITE} PRIVATE cxx_std_23)
-target_link_libraries(${TEST_SUITE} doctest::doctest ${MODULE_NAME})
-
+target_link_libraries(${TEST_SUITE} PRIVATE doctest::doctest Boost::ut ${MODULE_NAME})
 # ######################################################################################################################
 # Enable compiler warnings
 # ######################################################################################################################

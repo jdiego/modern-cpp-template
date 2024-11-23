@@ -26,12 +26,6 @@ option(CPM_USE_LOCAL_PACKAGES "Always try to use `find_package` to get dependenc
 include(../cmake/CPM.cmake)
 
 CPMAddPackage(
-    NAME doctest
-    GITHUB_REPOSITORY doctest/doctest
-    VERSION 2.4.11
-)
-
-CPMAddPackage(
     NAME ut
     GITHUB_REPOSITORY boost-ext/ut
     VERSION  2.1.1
@@ -58,7 +52,7 @@ verbose_message("Adding ${TEST_SOURCES} to ${TEST_SUITE} test suite.")
 # ######################################################################################################################
 add_executable(${TEST_SUITE} ${TEST_SOURCES})
 target_compile_features(${TEST_SUITE} PRIVATE cxx_std_23)
-target_link_libraries(${TEST_SUITE} PRIVATE doctest::doctest Boost::ut ${MODULE_NAME})
+target_link_libraries(${TEST_SUITE} PRIVATE Boost::ut ${MODULE_NAME})
 # ######################################################################################################################
 # Enable compiler warnings
 # ######################################################################################################################

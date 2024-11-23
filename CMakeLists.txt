@@ -78,10 +78,10 @@ message(STATUS "Started CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
 # Add dependencies
 # ######################################################################################################################
 include(cmake/CPM.cmake)
-CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
+CPMAddPackage("gh:TheLartians/Format.cmake@1.8.1")
 
 # PackageProject.cmake will be used to make our target installable
-CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.11.0")
+CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.12.0")
 
 # Collect the built libraries and include directories
 # A semicolon separated list of the project's dependencies
@@ -89,7 +89,7 @@ set(${PROJECT_NAME}_DEPENDENCIES "")
 
 CPMAddPackage(
   NAME fmt
-  GIT_TAG 10.1.1
+  GIT_TAG 11.0.2
   GITHUB_REPOSITORY fmtlib/fmt
   OPTIONS "FMT_INSTALL YES" # create an installable target
 )
@@ -98,7 +98,7 @@ list(APPEND ${PROJECT_NAME}_DEPENDENCIES "fmt 10.1.1")
 CPMAddPackage(
     NAME spdlog
     GITHUB_REPOSITORY gabime/spdlog
-    VERSION 1.12.0
+    VERSION 1.15.0
     OPTIONS "SPDLOG_INSTALL YES" "SPDLOG_FMT_EXTERNAL YES" # create an installable target and force uses a external fmt
 )
 

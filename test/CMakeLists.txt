@@ -30,7 +30,7 @@ CPMAddPackage(
     GITHUB_REPOSITORY doctest/doctest
     VERSION 2.4.11
 )
-CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
+CPMAddPackage("gh:TheLartians/Format.cmake@1.8.1")
 
 if(TEST_USE_INSTALLED_VERSION)
     find_package(${MODULE_NAME} REQUIRED)

@@ -1,3 +1,5 @@
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <boost/ut.hpp>
 
-#include <doctest/doctest.h>
+int main(){
+    return 0;
+}

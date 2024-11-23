@@ -1,22 +1,26 @@
 
 #include "modern_cpp_project/greeter.hpp"
 #include "modern_cpp_project/version.hpp"
-#include <doctest/doctest.h>
 #include <iostream>
 #include <string>
+#include <boost/ut.hpp>
 
-TEST_CASE("Greeter") {
+namespace ut = boost::ut;
+
+
+ut::suite<"GreeterTestSuite"> greeter_suite = [] {
+    using namespace ut;
     using namespace greeter;
+    "greeter"_test = [] {
+        Greeter greeter("Tests");
+        expect(greeter.greet(LanguageCode::EN) == "Hello, Tests!");
+        expect(greeter.greet(LanguageCode::DE) == "Hallo Tests!");
+        expect(greeter.greet(LanguageCode::ES) == "¡Hola Tests!");
+        expect(greeter.greet(LanguageCode::FR) == "Bonjour Tests!");
+    };
 
-    Greeter greeter("Tests");
-
-    CHECK(greeter.greet(LanguageCode::EN) == "Hello, Tests!");
-    CHECK(greeter.greet(LanguageCode::DE) == "Hallo Tests!");
-    CHECK(greeter.greet(LanguageCode::ES) == "¡Hola Tests!");
-    CHECK(greeter.greet(LanguageCode::FR) == "Bonjour Tests!");
-}
-
-TEST_CASE("Greeter version") {
-    static_assert(std::string_view(MODERN_CPP_PROJECT_VERSION) == std::string_view("1.0.0"));
-    CHECK(std::string(MODERN_CPP_PROJECT_VERSION) == std::string("1.0.0"));
-}
+    "version"_test = [] {
+        expect(std::string_view(MODERN_CPP_PROJECT_VERSION) == std::string_view("1.0.0") >> fatal);
+        expect(std::string(MODERN_CPP_PROJECT_VERSION) == std::string("1.0.0"));
+    };
+};

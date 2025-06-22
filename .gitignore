@@ -47,3 +47,9 @@ compile_commands.json
 
 # Check files
 cppcheck.txt
+
+# macOS system files 
+.DS_Store
+
+# macOS folder settings
+__MACOSX/

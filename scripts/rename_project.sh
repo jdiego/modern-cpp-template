@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Runt his script at root directory to 
+# Run this script at root directory to 
 # - replace "Greeter" with new project name in all CMakeLists.txt
 # - rename include/greeter to include/<project_name>
 
@@ -43,14 +43,14 @@ echo " Update include directory and includes"
 OLD_NAME_LOWER=$(echo "$OLD_NAME" | tr '[:upper:]' '[:lower:]')
 NEW_NAME_LOWER=$(echo "$NEW_NAME" | tr '[:upper:]' '[:lower:]')
 mv include/${OLD_NAME_LOWER} include/${NEW_NAME_LOWER}
-find . \( -name '*.cpp' -o -name '*.h' \) -exec sed -i "s/#include <${OLD_NAME_LOWER}/#include <${NEW_NAME_LOWER}/g" {} \;
+find . \( -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) -exec sed -i "s/#include <${OLD_NAME_LOWER}/#include <${NEW_NAME_LOWER}/g" {} \;
 
 echo "-- Update project version testing --"
 OLD_NAME_UPPER=$(echo "$OLD_NAME" | tr '[:lower:]' '[:upper:]')
 NEW_NAME_UPPER=$(echo "$NEW_NAME" | tr '[:lower:]' '[:upper:]')
 find . -type f -exec sed -i "s/${OLD_NAME_UPPER}_VERSION/${NEW_NAME_UPPER}_VERSION/g" {} \;
 
-# test new project is compiable and tested
+# test new project is compilable and tested
 cmake -S all -B build
 cmake --build build
 
@@ -59,6 +59,10 @@ cmake --build build
 # format code
 cmake --build build --target fix-format
 # run standalone
-./build/standalone/Greeter --help
+APP_EXECUTABLE_NAME=$(grep -E 'set\(\s*APP_EXECUTABLE_NAME\s+' standalone/CMakeLists.txt | sed -E 's/.*set\(\s*APP_EXECUTABLE_NAME\s+([^)]+)\).*/\1/' | tr -d '[:space:]')
+if [ -z "$APP_EXECUTABLE_NAME" ]; then
+    APP_EXECUTABLE_NAME="modern_cpp_app"
+fi
+./build/standalone/${APP_EXECUTABLE_NAME} --help
 # build docs
 cmake --build build --target GenerateDocs

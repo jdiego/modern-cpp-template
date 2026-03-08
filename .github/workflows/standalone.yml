@@ -2,38 +2,45 @@ name: Standalone
 
 on:
   push:
-    branches:
-      - master
-      - main
+    branches: [main, master]
   pull_request:
-    branches:
-      - master
-      - main
+    branches: [main, master]
 
 env:
   BUILD_TYPE: Release
-  INSTALL_LOCATION: .local
-  PROJECT_NAME: "MODERN_CPP_PROJECT"
-  APP_NAME: "modern_cpp_project"
+  PROJECT_NAME: MODERN_CPP_PROJECT
+  APP_NAME: modern_cpp_app
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: "**/cpm_modules"
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
-      - name: configure
-        run: cmake -Bbuild -D${PROJECT_NAME}_ENABLE_STANDALONE=1 -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      - name: Install GCC 14
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-14 g++-14
 
-      - name: build
-        run: cmake --build build -j4
+      - name: Configure (standalone project)
+        run: |
+          cmake -S standalone -B build/standalone \
+            -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+            -DCMAKE_C_COMPILER=gcc-14 \
+            -DCMAKE_CXX_COMPILER=g++-14
 
-      - name: run
-        run: ./build/bin/${APP_NAME}
+      - name: Build
+        run: cmake --build build/standalone --config $BUILD_TYPE -j$(nproc)
+
+      - name: Run
+        run: |
+          ./build/standalone/bin/$APP_NAME --version
+          ./build/standalone/bin/$APP_NAME --name "CI" --lang en
+          ./build/standalone/bin/$APP_NAME --name "CI" --lang de

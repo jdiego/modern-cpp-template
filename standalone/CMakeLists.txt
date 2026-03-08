@@ -5,6 +5,10 @@ project(Standalone LANGUAGES CXX)
 set(APP_EXECUTABLE_NAME "modern_cpp_app")
 set(LIBRARY_TARGET_NAME "modern_cpp_project")
 
+if(PROJECT_IS_TOP_LEVEL)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+endif()
+
 # ---- Include Custom CMake Modules ----
 include(../cmake/Utils.cmake)
 

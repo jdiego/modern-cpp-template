@@ -36,7 +36,8 @@ jobs:
             -DCMAKE_CXX_COMPILER=g++-14 \
             -DCMAKE_INSTALL_PREFIX=$INSTALL_LOCATION \
             -DMODERN_CPP_PROJECT_ENABLE_TESTING=OFF \
-            -DMODERN_CPP_PROJECT_ENABLE_STANDALONE=OFF
+            -DMODERN_CPP_PROJECT_ENABLE_STANDALONE=OFF \
+            -DMODERN_CPP_PROJECT_BUILD_SHARED_LIBS=OFF
           cmake --build build --config $BUILD_TYPE -j$(nproc)
           cmake --build build --target install --config $BUILD_TYPE
           rm -rf build

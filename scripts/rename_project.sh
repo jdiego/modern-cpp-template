@@ -59,6 +59,10 @@ cmake --build build
 # format code
 cmake --build build --target fix-format
 # run standalone
-./build/standalone/Greeter --help
+APP_EXECUTABLE_NAME=$(grep -E 'set\(\s*APP_EXECUTABLE_NAME\s+' standalone/CMakeLists.txt | sed -E 's/.*set\(\s*APP_EXECUTABLE_NAME\s+([^)]+)\).*/\1/' | tr -d '[:space:]')
+if [ -z "$APP_EXECUTABLE_NAME" ]; then
+    APP_EXECUTABLE_NAME="modern_cpp_app"
+fi
+./build/standalone/${APP_EXECUTABLE_NAME} --help
 # build docs
 cmake --build build --target GenerateDocs

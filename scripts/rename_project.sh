@@ -43,7 +43,7 @@ echo " Update include directory and includes"
 OLD_NAME_LOWER=$(echo "$OLD_NAME" | tr '[:upper:]' '[:lower:]')
 NEW_NAME_LOWER=$(echo "$NEW_NAME" | tr '[:upper:]' '[:lower:]')
 mv include/${OLD_NAME_LOWER} include/${NEW_NAME_LOWER}
-find . \( -name '*.cpp' -o -name '*.h' \) -exec sed -i "s/#include <${OLD_NAME_LOWER}/#include <${NEW_NAME_LOWER}/g" {} \;
+find . \( -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) -exec sed -i "s/#include <${OLD_NAME_LOWER}/#include <${NEW_NAME_LOWER}/g" {} \;
 
 echo "-- Update project version testing --"
 OLD_NAME_UPPER=$(echo "$OLD_NAME" | tr '[:lower:]' '[:upper:]')

@@ -50,7 +50,7 @@ OLD_NAME_UPPER=$(echo "$OLD_NAME" | tr '[:lower:]' '[:upper:]')
 NEW_NAME_UPPER=$(echo "$NEW_NAME" | tr '[:lower:]' '[:upper:]')
 find . -type f -exec sed -i "s/${OLD_NAME_UPPER}_VERSION/${NEW_NAME_UPPER}_VERSION/g" {} \;
 
-# test new project is compiable and tested
+# test new project is compilable and tested
 cmake -S all -B build
 cmake --build build
 

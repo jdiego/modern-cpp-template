@@ -34,10 +34,6 @@ add_executable(${APP_EXECUTABLE_NAME} ${sources})
 
 target_compile_features(${APP_EXECUTABLE_NAME} PRIVATE cxx_std_23)
 
-set_target_properties(${APP_EXECUTABLE_NAME} PROPERTIES
-    OUTPUT_NAME ${APP_EXECUTABLE_NAME}
-)
-
 target_link_libraries(${APP_EXECUTABLE_NAME}
     PRIVATE
     ${LIBRARY_TARGET_NAME}::${LIBRARY_TARGET_NAME}

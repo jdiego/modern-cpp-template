@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24...3.31)
+cmake_minimum_required(VERSION 3.25...4.2)
 
 set(MODULE_NAME modern_cpp_project)
 set(TEST_SUITE ModernCppProjectTestRunner)
@@ -29,7 +29,8 @@ CPMAddPackage("gh:TheLartians/Format.cmake@1.8.1")
 
 if(TEST_USE_INSTALLED_VERSION)
     find_package(${MODULE_NAME} REQUIRED)
-else()
+elseif(NOT TARGET ${MODULE_NAME})
+    # When invoked standalone; when used via add_subdirectory the target already exists
     CPMAddPackage(NAME ${MODULE_NAME} SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/.. FORCE ON)
 endif()
 

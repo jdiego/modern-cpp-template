@@ -1,28 +1,27 @@
 #include "modern_cpp_project/greeter.hpp"
 
-#include <fmt/format.h>
+#include <format>
 #include <spdlog/spdlog.h>
-#include <vector>
+
 using namespace greeter;
 
 Greeter::Greeter(std::string _name) : name(std::move(_name)) {
 }
 
 std::string Greeter::greet(LanguageCode lang) const {
-    spdlog::info("Welcome to spdlog!");
-    std::vector<int> str;
+    spdlog::info("Greeting requested for: {}", name);
 
     switch (lang) {
     case LanguageCode::EN:
-        return fmt::format("Hello, {}!", name);
+        return std::format("Hello, {}!", name);
     case LanguageCode::DE:
-        return fmt::format("Hallo {}!", name);
+        return std::format("Hallo {}!", name);
     case LanguageCode::ES:
-        return fmt::format("¡Hola {}!", name);
+        return std::format("¡Hola {}!", name);
     case LanguageCode::FR:
-        return fmt::format("Bonjour {}!", name);
+        return std::format("Bonjour {}!", name);
     default:
-        std::string msg = fmt::format("Error: The Language Code is invalid: {}", name);
+        auto msg = std::format("Error: invalid language code for name: {}", name);
         spdlog::error(msg);
         return msg;
     }

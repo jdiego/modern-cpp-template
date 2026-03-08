@@ -1,0 +1,141 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 25,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "MODERN_CPP_PROJECT_ENABLE_TESTING": "ON",
+                "MODERN_CPP_PROJECT_ENABLE_STANDALONE": "ON"
+            }
+        },
+        {
+            "name": "dev",
+            "displayName": "Debug (development)",
+            "description": "Debug build with full warnings",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Release",
+            "description": "Optimised release build",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "rel-with-debug",
+            "displayName": "RelWithDebInfo",
+            "description": "Release with debug symbols",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "asan",
+            "displayName": "Debug + AddressSanitizer",
+            "description": "Debug build with ASan and UBSan",
+            "inherits": "dev",
+            "cacheVariables": {
+                "CMAKE_CXX_FLAGS": "-fsanitize=address,undefined -fno-omit-frame-pointer"
+            }
+        },
+        {
+            "name": "tsan",
+            "displayName": "Debug + ThreadSanitizer",
+            "description": "Debug build with ThreadSanitizer",
+            "inherits": "dev",
+            "cacheVariables": {
+                "CMAKE_CXX_FLAGS": "-fsanitize=thread"
+            }
+        },
+        {
+            "name": "coverage",
+            "displayName": "Debug + Coverage",
+            "description": "Debug build with code coverage instrumentation",
+            "inherits": "dev",
+            "cacheVariables": {
+                "MODERN_CPP_PROJECT_ENABLE_CODE_COVERAGE": "ON"
+            }
+        },
+        {
+            "name": "warnings-as-errors",
+            "displayName": "Debug + Warnings as errors",
+            "description": "Debug build with -Werror",
+            "inherits": "dev",
+            "cacheVariables": {
+                "MODERN_CPP_PROJECT_WARNINGS_AS_ERRORS": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "dev",
+            "displayName": "Build (debug)",
+            "configurePreset": "dev"
+        },
+        {
+            "name": "release",
+            "displayName": "Build (release)",
+            "configurePreset": "release",
+            "configuration": "Release"
+        },
+        {
+            "name": "asan",
+            "displayName": "Build (asan)",
+            "configurePreset": "asan"
+        },
+        {
+            "name": "coverage",
+            "displayName": "Build (coverage)",
+            "configurePreset": "coverage"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "dev",
+            "displayName": "Test (debug)",
+            "configurePreset": "dev",
+            "output": {
+                "outputOnFailure": true,
+                "verbosity": "default"
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Test (release)",
+            "configurePreset": "release",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "asan",
+            "displayName": "Test (asan)",
+            "configurePreset": "asan",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "coverage",
+            "displayName": "Test (coverage)",
+            "configurePreset": "coverage",
+            "output": {
+                "outputOnFailure": true
+            }
+        }
+    ]
+}

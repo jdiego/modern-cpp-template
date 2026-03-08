@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24...3.31)
+cmake_minimum_required(VERSION 3.25...4.2)
 # ##############################################################################
 # Define the Project Name and Description
 # ##############################################################################
@@ -97,21 +97,12 @@ include(cmake/PackageProject.cmake)
 set(${PROJECT_NAME}_DEPENDENCIES "")
 
 CPMAddPackage(
-  NAME fmt
-  GIT_TAG 11.0.2
-  GITHUB_REPOSITORY fmtlib/fmt
-  OPTIONS "FMT_INSTALL YES" # create an installable target
-)
-list(APPEND ${PROJECT_NAME}_DEPENDENCIES "fmt 10.1.1")
-
-CPMAddPackage(
     NAME spdlog
     GITHUB_REPOSITORY gabime/spdlog
     VERSION 1.15.0
-    OPTIONS "SPDLOG_INSTALL YES" "SPDLOG_FMT_EXTERNAL YES"
+    OPTIONS "SPDLOG_INSTALL YES" "SPDLOG_USE_STD_FORMAT YES"
 )
-
-list(APPEND ${PROJECT_NAME}_DEPENDENCIES "spdlog 1.12.0")
+list(APPEND ${PROJECT_NAME}_DEPENDENCIES "spdlog 1.15.0")
 
 set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
 
@@ -132,17 +123,17 @@ file(
 source_group(
     TREE "${CMAKE_CURRENT_SOURCE_DIR}/include"
     PREFIX "Header Files"
-    FILES ${HEADER_LIST}
+    FILES ${headers}
 )
 
 ##############################################################################
 # ---- Create library ----
 ##############################################################################
 if(${PROJECT_NAME_UPPERCASE}_BUILD_HEADERS_ONLY)
-    add_library(${PORJECT_NAME_LOWERCASE} INTERFACE)
-    target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_23)
+    add_library(${PROJECT_NAME_LOWERCASE} INTERFACE)
+    target_compile_features(${PROJECT_NAME_LOWERCASE} INTERFACE cxx_std_23)
 else()
-    add_library(${PROJECT_NAME_LOWERCASE} ${headers} ${sources})
+    add_library(${PROJECT_NAME_LOWERCASE})
     target_compile_features(${PROJECT_NAME_LOWERCASE} PUBLIC cxx_std_23)
     verbose_message("Added all header and implementation files.\n")
 endif()
@@ -183,7 +174,7 @@ find_package(Threads)
 target_link_libraries(
     ${PROJECT_NAME_LOWERCASE}
     PRIVATE
-        Threads::Threads fmt::fmt spdlog::spdlog
+        Threads::Threads spdlog::spdlog
 )
 
 if(CMAKE_SKIP_INSTALL_RULES)
@@ -221,6 +212,21 @@ packageProject(
     HEADER_SETS public_headers
 )
 
+
+##############################################################################
+# Subprojects (only when this is the top-level build)
+##############################################################################
+if(PROJECT_IS_TOP_LEVEL)
+    if(${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING)
+        message(STATUS "Building unit tests for ${PROJECT_NAME}.\n")
+        enable_testing()
+        add_subdirectory(test)
+    endif()
+
+    if(${PROJECT_NAME_UPPERCASE}_ENABLE_STANDALONE)
+        add_subdirectory(standalone)
+    endif()
+endif()
 
 # ############################################################################
 # INFO

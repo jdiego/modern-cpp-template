@@ -3,7 +3,7 @@
 
 #include <cxxopts.hpp>
 #include <format>
-#include <print>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 
@@ -21,12 +21,12 @@ int main(int argc, char** argv) {
     auto result = options.parse(argc, argv);
 
     if (result.count("help")) {
-        std::print("{}\n", options.help());
+        std::cout << options.help();
         return 0;
     }
 
     if (result.count("version")) {
-        std::print("{} v{}\n", MODERN_CPP_PROJECT_NAME, MODERN_CPP_PROJECT_VERSION);
+        std::cout << std::format("{} v{}\n", MODERN_CPP_PROJECT_NAME, MODERN_CPP_PROJECT_VERSION);
         return 0;
     }
 
@@ -42,12 +42,12 @@ int main(int argc, char** argv) {
 
     const auto it = languages.find(lang);
     if (it == languages.end()) {
-        std::println(stderr, "Error: unsupported language '{}'. Use: en, de, es, fr", lang);
+        std::cerr << std::format("Error: unsupported language '{}'. Use: en, de, es, fr\n", lang);
         return 1;
     }
 
     greeter::Greeter greeter(name);
-    std::println("{}", greeter.greet(it->second));
+    std::cout << std::format("{}\n", greeter.greet(it->second));
 
     return 0;
 }

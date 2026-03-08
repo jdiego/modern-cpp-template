@@ -1,43 +1,43 @@
-name: MacOS
+name: macOS
 
 on:
   push:
-    branches:
-      - master
-      - main
+    branches: [main, master]
   pull_request:
-    branches:
-      - master
-      - main
+    branches: [main, master]
 
 env:
+  INSTALL_LOCATION: ${{ github.workspace }}/.local
   BUILD_TYPE: Release
-  INSTALL_LOCATION: .local
   CTEST_OUTPUT_ON_FAILURE: 1
+  PROJECT_NAME: MODERN_CPP_PROJECT
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-15
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: "**/cpm_modules"
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
-      - name: configure
-        run: cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/$INSTALL_LOCATION
-
-      - name: build
-        run: cmake --build build --config $BUILD_TYPE -j4
-
-      - name: test
+      - name: Configure
         run: |
-          cd build
-          ctest -C $BUILD_TYPE -VV
-      
-      - name: install project
-        run: cmake --build build --target install --config $BUILD_TYPE 
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+            -DCMAKE_INSTALL_PREFIX=$INSTALL_LOCATION \
+            -D${PROJECT_NAME}_ENABLE_TESTING=ON \
+            -D${PROJECT_NAME}_ENABLE_STANDALONE=ON
+
+      - name: Build
+        run: cmake --build build --config $BUILD_TYPE -j$(sysctl -n hw.logicalcpu)
+
+      - name: Test
+        run: ctest --test-dir build -C $BUILD_TYPE --output-on-failure
+
+      - name: Install
+        run: cmake --build build --target install --config $BUILD_TYPE

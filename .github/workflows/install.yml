@@ -2,45 +2,56 @@ name: Install
 
 on:
   push:
-    branches:
-      - master
-      - main
+    branches: [main, master]
   pull_request:
-    branches:
-      - master
-      - main
+    branches: [main, master]
 
 env:
-  INSTALL_LOCATION: $HOME/.local
-  BUILD_TYPE: Debug
-  CTEST_OUTPUT_ON_FAILURE: 1
+  BUILD_TYPE: Release
+  INSTALL_LOCATION: ${{ github.workspace }}/.local
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: "**/cpm_modules"
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
-      - name: build and install library
+      - name: Install GCC 14
         run: |
-          cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-          sudo cmake --build build --target install
+          sudo apt-get update
+          sudo apt-get install -y gcc-14 g++-14
+
+      - name: Build and install library
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+            -DCMAKE_C_COMPILER=gcc-14 \
+            -DCMAKE_CXX_COMPILER=g++-14 \
+            -DCMAKE_INSTALL_PREFIX=$INSTALL_LOCATION \
+            -DMODERN_CPP_PROJECT_ENABLE_TESTING=OFF \
+            -DMODERN_CPP_PROJECT_ENABLE_STANDALONE=OFF
+          cmake --build build --config $BUILD_TYPE -j$(nproc)
+          cmake --build build --target install --config $BUILD_TYPE
           rm -rf build
 
-      - name: configure
-        run: cmake -Bbuild -DTEST_USE_INSTALLED_VERSION=1
-
-      - name: build
-        run:  cmake --build build --config $BUILD_TYPE -j4
-
-      - name: test
+      - name: Configure test against installed library
         run: |
-          cd build
-          ctest --build-config $BUILD_TYPE
+          cmake -S test -B build/test \
+            -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+            -DCMAKE_C_COMPILER=gcc-14 \
+            -DCMAKE_CXX_COMPILER=g++-14 \
+            -DCMAKE_PREFIX_PATH=$INSTALL_LOCATION \
+            -DTEST_USE_INSTALLED_VERSION=ON
+
+      - name: Build tests
+        run: cmake --build build/test --config $BUILD_TYPE -j$(nproc)
+
+      - name: Run tests
+        run: ctest --test-dir build/test -C $BUILD_TYPE --output-on-failure

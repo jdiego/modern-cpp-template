@@ -11,6 +11,13 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+# Validate project name: must start with a letter and contain only
+# alphanumeric characters, underscores, or dashes.
+if [[ ! "$1" =~ ^[a-zA-Z][a-zA-Z0-9_-]*$ ]]; then
+    echo "Error: Project name must start with a letter and contain only alphanumeric characters, underscores, or dashes."
+    exit 1
+fi
+
 OLD_NAME="Greeter"
 NEW_NAME="$1"
 echo "Replacing '$OLD_NAME' with '$NEW_NAME' in CMakeLists.txt files ... "
@@ -42,20 +49,20 @@ echo "Total replacements made: $REPLACEMENTS_TOTAL"
 echo " Update include directory and includes"
 OLD_NAME_LOWER=$(echo "$OLD_NAME" | tr '[:upper:]' '[:lower:]')
 NEW_NAME_LOWER=$(echo "$NEW_NAME" | tr '[:upper:]' '[:lower:]')
-mv include/${OLD_NAME_LOWER} include/${NEW_NAME_LOWER}
+mv "include/${OLD_NAME_LOWER}" "include/${NEW_NAME_LOWER}"
 find . \( -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) -exec sed -i "s/#include <${OLD_NAME_LOWER}/#include <${NEW_NAME_LOWER}/g" {} \;
 
 echo "-- Update project version testing --"
 OLD_NAME_UPPER=$(echo "$OLD_NAME" | tr '[:lower:]' '[:upper:]')
 NEW_NAME_UPPER=$(echo "$NEW_NAME" | tr '[:lower:]' '[:upper:]')
-find . -type f -exec sed -i "s/${OLD_NAME_UPPER}_VERSION/${NEW_NAME_UPPER}_VERSION/g" {} \;
+find . -type f -exec sed -i "s/${OLD_NAME_UPPER}_/${NEW_NAME_UPPER}_/g" {} \;
 
 # test new project is compilable and tested
-cmake -S all -B build
+cmake -S . -B build
 cmake --build build
 
 # run tests
-./build/test/${NEW_NAME}Tests
+ctest --test-dir build --output-on-failure
 # format code
 cmake --build build --target fix-format
 # run standalone
@@ -63,6 +70,6 @@ APP_EXECUTABLE_NAME=$(grep -E 'set\(\s*APP_EXECUTABLE_NAME\s+' standalone/CMakeL
 if [ -z "$APP_EXECUTABLE_NAME" ]; then
     APP_EXECUTABLE_NAME="modern_cpp_app"
 fi
-./build/standalone/${APP_EXECUTABLE_NAME} --help
+"./build/standalone/${APP_EXECUTABLE_NAME}" --help
 # build docs
 cmake --build build --target GenerateDocs

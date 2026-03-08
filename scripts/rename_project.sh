@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Runt his script at root directory to 
+# Run this script at root directory to 
 # - replace "Greeter" with new project name in all CMakeLists.txt
 # - rename include/greeter to include/<project_name>
 

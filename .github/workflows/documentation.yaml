@@ -3,7 +3,7 @@ name: Documentation
 on:
   push:
     tags:
-      - "*"
+      - "v*"
 
 env:
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
@@ -11,27 +11,36 @@ env:
 jobs:
   build:
     name: Build and publish documentation
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
+    runs-on: ubuntu-24.04
 
-      - uses: actions/cache@v3
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache@v4
         with:
           path: "**/cpm_modules"
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
-      - name: Install dependencies
+      - name: Install GCC 14 and Doxygen
         run: |
-          brew install doxygen
-          pip3 install jinja2 Pygments
+          sudo apt-get update
+          sudo apt-get install -y gcc-14 g++-14 doxygen graphviz
 
-      - name: Build
+      - name: Configure
         run: |
-          cmake -Sdocumentation -Bbuild
-          cmake --build build --target GenerateDocs
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER=gcc-14 \
+            -DCMAKE_CXX_COMPILER=g++-14 \
+            -DMODERN_CPP_PROJECT_ENABLE_DOXYGEN=ON \
+            -DMODERN_CPP_PROJECT_ENABLE_TESTING=OFF \
+            -DMODERN_CPP_PROJECT_ENABLE_STANDALONE=OFF
 
-      - name: Publish
+      - name: Build documentation
+        run: cmake --build build --target doxygen-docs
+
+      - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/doxygen/html
+          publish_dir: ./build/docs/html

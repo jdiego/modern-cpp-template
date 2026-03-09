@@ -29,8 +29,14 @@ option(CXX_STANDARD_REQUIRED "Require C++ Standard" ON)
 set(CMAKE_DEBUG_POSTFIX d)
 # Always use '-fPIC'/'-fPIE' option.
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-#
-set(CMAKE_CONFIGURATION_TYPES "Debug" CACHE STRING "" FORCE)
+
+# For multi-config generators (Xcode, Visual Studio) provide all standard types.
+# For single-config generators CMAKE_BUILD_TYPE is set in CMakeLists.txt.
+get_property(_is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(_is_multi_config AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelWithDebInfo;MinSizeRel"
+        CACHE STRING "Available build configurations" FORCE)
+endif()
 
 
 if (${PROJECT_NAME_UPPERCASE}_MAKEFILE_VERBOSE_OUTPUT)

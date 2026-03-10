@@ -57,10 +57,16 @@ target_compile_features(${TEST_SUITE} PRIVATE cxx_std_23)
 # Enable compiler warnings
 # ######################################################################################################################
 if(NOT TEST_USE_INSTALLED_VERSION)
+    get_target_property(module_target_type ${MODULE_NAME} TYPE)
+    set(module_compile_scope PUBLIC)
+    if(module_target_type STREQUAL "INTERFACE_LIBRARY")
+        set(module_compile_scope INTERFACE)
+    endif()
+
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        target_compile_options(${MODULE_NAME} PUBLIC -Wall -Wpedantic -Wextra -Werror)
+        target_compile_options(${MODULE_NAME} ${module_compile_scope} -Wall -Wpedantic -Wextra -Werror)
     elseif(MSVC)
-        target_compile_options(${MODULE_NAME} PUBLIC /W4 /WX)
+        target_compile_options(${MODULE_NAME} ${module_compile_scope} /W4 /WX)
     endif()
 endif()
 # ######################################################################################################################
@@ -75,10 +81,16 @@ add_test(NAME ${TEST_SUITE} COMMAND ${TEST_SUITE})
 # ######################################################################################################################
 # Setup code coverage if enabled
 # ######################################################################################################################
-if (${MODULE_NAME}_ENABLE_CODE_COVERAGE OR ENABLE_CODE_COVERAGE)
+if((${MODULE_NAME}_ENABLE_CODE_COVERAGE OR ENABLE_CODE_COVERAGE) AND TARGET ${MODULE_NAME})
+    get_target_property(module_target_type ${MODULE_NAME} TYPE)
+    set(module_compile_scope PUBLIC)
+    if(module_target_type STREQUAL "INTERFACE_LIBRARY")
+        set(module_compile_scope INTERFACE)
+    endif()
+
     # ---- code coverage ----
-    target_compile_options(${MODULE_NAME} PUBLIC -O0 -g -fprofile-arcs -ftest-coverage)
-    target_link_options(${MODULE_NAME} PUBLIC -fprofile-arcs -ftest-coverage)
+    target_compile_options(${MODULE_NAME} ${module_compile_scope} -O0 -g -fprofile-arcs -ftest-coverage)
+    target_link_options(${MODULE_NAME} ${module_compile_scope} -fprofile-arcs -ftest-coverage)
 endif()
 
 

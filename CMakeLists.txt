@@ -78,6 +78,10 @@ if(PROJECT_IS_TOP_LEVEL)
     if(NOT CMAKE_BUILD_TYPE)
         set(CMAKE_BUILD_TYPE "Debug")
     endif()
+
+    if(${PROJECT_NAME_UPPERCASE}_ENABLE_DOXYGEN OR ENABLE_DOXYGEN)
+        include(cmake/Doxygen.cmake)
+    endif()
 endif()
 
 ##############################################################################
@@ -129,14 +133,6 @@ source_group(
 ##############################################################################
 # ---- Create library ----
 ##############################################################################
-if(${PROJECT_NAME_UPPERCASE}_BUILD_HEADERS_ONLY)
-    add_library(${PROJECT_NAME_LOWERCASE} INTERFACE)
-    target_compile_features(${PROJECT_NAME_LOWERCASE} INTERFACE cxx_std_23)
-else()
-    add_library(${PROJECT_NAME_LOWERCASE})
-    target_compile_features(${PROJECT_NAME_LOWERCASE} PUBLIC cxx_std_23)
-    verbose_message("Added all header and implementation files.\n")
-endif()
 
 # #############################################################################
 # Add version header: the location where the project's version header will be
@@ -150,32 +146,54 @@ configure_file(
 )
 string(TOLOWER ${PROJECT_NAME}/version.hpp VERSION_HEADER_LOCATION)
 
+if(${PROJECT_NAME_UPPERCASE}_BUILD_HEADERS_ONLY)
+    add_library(${PROJECT_NAME_LOWERCASE} INTERFACE)
+    target_compile_features(${PROJECT_NAME_LOWERCASE} INTERFACE cxx_std_23)
 
-target_sources(
-    ${PROJECT_NAME_LOWERCASE}
-    PRIVATE ${sources}
-    PUBLIC FILE_SET public_headers
-    TYPE HEADERS BASE_DIRS
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_BINARY_DIR}
-    FILES
-        ${headers}
-        ${CMAKE_CURRENT_BINARY_DIR}/${VERSION_HEADER_LOCATION}
-)
+    target_sources(
+        ${PROJECT_NAME_LOWERCASE}
+        INTERFACE FILE_SET public_headers
+        TYPE HEADERS BASE_DIRS
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${CMAKE_CURRENT_BINARY_DIR}
+        FILES
+            ${headers}
+            ${CMAKE_CURRENT_BINARY_DIR}/${VERSION_HEADER_LOCATION}
+    )
 
-target_compile_options(
-    ${PROJECT_NAME_LOWERCASE}
-    PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->"
-)
+    target_compile_options(
+        ${PROJECT_NAME_LOWERCASE}
+        INTERFACE "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->"
+    )
+else()
+    add_library(${PROJECT_NAME_LOWERCASE})
+    target_compile_features(${PROJECT_NAME_LOWERCASE} PUBLIC cxx_std_23)
+    verbose_message("Added all header and implementation files.\n")
 
-# Link dependencies
-find_package(Threads)
-# Identify and link with the specific "packages" the project uses
-target_link_libraries(
-    ${PROJECT_NAME_LOWERCASE}
-    PRIVATE
-        Threads::Threads spdlog::spdlog
-)
+    target_sources(
+        ${PROJECT_NAME_LOWERCASE}
+        PRIVATE ${sources}
+        PUBLIC FILE_SET public_headers
+        TYPE HEADERS BASE_DIRS
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${CMAKE_CURRENT_BINARY_DIR}
+        FILES
+            ${headers}
+            ${CMAKE_CURRENT_BINARY_DIR}/${VERSION_HEADER_LOCATION}
+    )
+
+    target_compile_options(
+        ${PROJECT_NAME_LOWERCASE}
+        PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->"
+    )
+
+    find_package(Threads REQUIRED)
+    target_link_libraries(
+        ${PROJECT_NAME_LOWERCASE}
+        PRIVATE
+            Threads::Threads spdlog::spdlog
+    )
+endif()
 
 if(CMAKE_SKIP_INSTALL_RULES)
     add_library(
@@ -218,13 +236,21 @@ packageProject(
 ##############################################################################
 if(PROJECT_IS_TOP_LEVEL)
     if(${PROJECT_NAME_UPPERCASE}_ENABLE_TESTING)
-        message(STATUS "Building unit tests for ${PROJECT_NAME}.\n")
-        enable_testing()
-        add_subdirectory(test)
+        if(${PROJECT_NAME_UPPERCASE}_BUILD_HEADERS_ONLY)
+            message(STATUS "Skipping unit tests for ${PROJECT_NAME} (header-only mode).\n")
+        else()
+            message(STATUS "Building unit tests for ${PROJECT_NAME}.\n")
+            enable_testing()
+            add_subdirectory(test)
+        endif()
     endif()
 
     if(${PROJECT_NAME_UPPERCASE}_ENABLE_STANDALONE)
-        add_subdirectory(standalone)
+        if(${PROJECT_NAME_UPPERCASE}_BUILD_HEADERS_ONLY)
+            message(STATUS "Skipping standalone app for ${PROJECT_NAME} (header-only mode).\n")
+        else()
+            add_subdirectory(standalone)
+        endif()
     endif()
 endif()
 

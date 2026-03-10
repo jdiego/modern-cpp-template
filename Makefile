@@ -54,12 +54,20 @@ coverage: ## check code coverage quickly GCC
 
 
 docs: ## generate Doxygen HTML documentation, including API docs
-	rm -rf docs/
+	@if ! command -v doxygen >/dev/null 2>&1; then \
+		echo "Error: Doxygen is not installed (missing 'doxygen' in PATH)."; \
+		echo "Install Doxygen and rerun 'make docs'."; \
+		exit 1; \
+	fi
 	rm -rf build/
-	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -DENABLE_DOXYGEN=1
-	cmake --build build --config Release
+	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) \
+		-D$(PROJECT_NAME_UPPERCASE)_ENABLE_DOXYGEN=1
 	cmake --build build --target doxygen-docs
-	$(BROWSER) docs/html/index.html
+	@test -f build/docs/html/index.html || { \
+		echo "Error: documentation was not generated at build/docs/html/index.html."; \
+		exit 1; \
+	}
+	$(BROWSER) build/docs/html/index.html
 
 install: ## install the package to the `INSTALL_LOCATION`
 	rm -rf build/
@@ -87,4 +95,3 @@ check:
 		--force -q \
 		-I ./include ./src 2>&1 | tee cppcheck.txt
 	python ./ci/colorize_cppcheck_results.py
-

@@ -98,9 +98,19 @@
             "configurePreset": "asan"
         },
         {
+            "name": "tsan",
+            "displayName": "Build (tsan)",
+            "configurePreset": "tsan"
+        },
+        {
             "name": "coverage",
             "displayName": "Build (coverage)",
             "configurePreset": "coverage"
+        },
+        {
+            "name": "warnings-as-errors",
+            "displayName": "Build (warnings-as-errors)",
+            "configurePreset": "warnings-as-errors"
         }
     ],
     "testPresets": [
